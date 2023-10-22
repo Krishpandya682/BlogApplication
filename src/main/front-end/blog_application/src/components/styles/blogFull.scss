@@ -1,0 +1,37 @@
+.blog-page {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  
+  .blog-title {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .creator-name {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .last-updated {
+    font-size: 14px;
+    color: #999;
+  }
+  
+  .blog-id, .user-id {
+    font-size: 12px;
+    color: #aaa;
+  }
+  
+  .blog-image, .user-profile-pic {
+    max-width: 100%;
+    border-radius: 50%;
+    margin: 10px 0;
+  }
+  

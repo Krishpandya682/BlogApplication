@@ -1,14 +1,17 @@
 package com.example.blogApplication.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table
+@DynamicInsert
+@DynamicUpdate
 public class User {
 	
 	@Id
@@ -37,16 +40,14 @@ public class User {
 
 
     private String email;
+
+    @CreationTimestamp
+    private LocalDateTime created;
+
+    @UpdateTimestamp
+    private LocalDateTime updated;
     public User(){}
-
-
-    // Constructor to create a User object
-    public User(String name, int id, String firebaseId, String email) {
-        this.name = name;
-        this.id = id;
-        this.firebaseId = firebaseId;
-        this.email = email;
-    }
+    private String profile_pic;
     // Getter method for retrieving the user's name
     public String getName() {
         return name;
@@ -77,6 +78,22 @@ public class User {
         this.firebaseId = firebaseId;
     }
 
+    // Constructor to create a User object
+    public User(String name, int id, String firebaseId, String email, String profilePic) {
+        this.name = name;
+        this.id = id;
+        this.firebaseId = firebaseId;
+        this.email = email;
+        profile_pic = profilePic;
+    }
+
+    public String getProfile_pic() {
+        return profile_pic;
+    }
+
+    public void setProfile_pic(String profile_pic) {
+        this.profile_pic = profile_pic;
+    }
     // A method to provide a string representation of the User object
     @Override
     public String toString() {
