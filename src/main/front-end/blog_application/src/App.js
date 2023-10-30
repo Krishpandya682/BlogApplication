@@ -9,6 +9,7 @@ import {AuthProvider} from './context/AuthContext'
 import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
 import Profile from "./components/Profile";
+import EditProfile from "./components/EditProfile";
 import Blogs from "./components/Blogs";
 import BlogFull from "./components/BlogFull";
 import CreateBlog from "./components/CreateBlog";
@@ -62,7 +63,9 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Home />}></Route>
+        <Route path="/profile/:id" element={<Profile />}></Route>
         <Route path="/profile" element={<Profile />}></Route>
+        <Route path="/editProfile" element={<EditProfile />}></Route>
         <Route path="/blogs" element={<Blogs />}></Route>
         <Route path="/blogs/:id" element={<BlogFull />}></Route>
         <Route path="/createBlog" element={<CreateBlog />}></Route>

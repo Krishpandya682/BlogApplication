@@ -5,14 +5,13 @@ import moment from "moment";
 import api from "../api/axiosConfig";
 import { useState, useEffect } from "react";
 import ReactLoading from "react-loading";
+import {lastUpdated} from './helperFunctions'
 
 
 export default function BlogCard({ blog }) {
 
   let url = "/blogs/" + blog.blog_id;
-  function lastUpdated(time) {
-    return moment(time).local().startOf("seconds").fromNow();
-  }
+
 
   return (
     <div>

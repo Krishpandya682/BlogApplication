@@ -77,6 +77,17 @@ public class CommentController {
         List<Comment> comments = commentService.getCommentByCommentor(userId);
         return comments;
     }
+    @GetMapping("/user/{userId}/comments/{limit}")
+    public List<Comment> getAllCommentsByUserLimit(@PathVariable(value = "userId") int userId, @PathVariable(value = "limit") int limit) {
+        try {
+            userService.getUser(userId);
+        } catch (Error e) {
+            throw e;
+        }
+
+        List<Comment> comments = commentService.getCommentByCommentorLimit(userId, limit);
+        return comments;
+    }
     @GetMapping("/blog/{blogId}/comments")
     public List<Comment> getAllCommentsOnBlog(@PathVariable(value = "blogId") int blogId) {
         try {
@@ -88,10 +99,38 @@ public class CommentController {
         List<Comment> comments = commentService.getCommentOnBlog(blogId);
         return comments;
     }
+    @GetMapping("/blog/{blogId}/commentsWithUser")
+    public List<CommentCommentorDTO> getCommentsWithUsersOnBlog(@PathVariable(value = "blogId") int blogId) {
+        try {
+            blogService.getBlog(blogId);
+        } catch (Error e) {
+            throw e;
+        }
+
+        List<CommentCommentorDTO> commentsWithUsers = commentService.getCommentsWithUsersOnBlog(blogId);
+        return commentsWithUsers;
+    }
+    @GetMapping("/{commentId}/repliesWithUser")
+    public List<CommentCommentorDTO> getCommentsWithUsersReplies(@PathVariable(value = "commentId") int commentId) {
+        try {
+            commentService.getComment(commentId);
+        } catch (Error e) {
+            throw e;
+        }
+
+        List<CommentCommentorDTO> commentRepliesWithUsers = commentService.getCommentsWithUsersReplies(commentId);
+        return commentRepliesWithUsers;
+    }
 
     @GetMapping("/{commentId}/CommentCommentorInfo")
     public CommentCommentorDTO getCommentAndCommentor(@PathVariable int commentId) {
         return commentService.getCommentAndCommentor(commentId);
+
+
+    }
+    @GetMapping("/{commentId}/NumReplies")
+    public int getRepliesCount(@PathVariable int commentId) {
+        return commentService.getRepliesCount(commentId);
 
 
     }

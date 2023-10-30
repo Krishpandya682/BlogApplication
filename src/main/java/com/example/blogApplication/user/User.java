@@ -47,7 +47,13 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updated;
     public User(){}
+
+    @Column(length = 1000)
     private String profile_pic;
+
+
+    @Column(columnDefinition="TEXT")
+    private String bio;
     // Getter method for retrieving the user's name
     public String getName() {
         return name;
@@ -78,13 +84,22 @@ public class User {
         this.firebaseId = firebaseId;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     // Constructor to create a User object
-    public User(String name, int id, String firebaseId, String email, String profilePic) {
+    public User(String name, int id, String firebaseId, String email, String profilePic, String bio) {
         this.name = name;
         this.id = id;
         this.firebaseId = firebaseId;
         this.email = email;
-        profile_pic = profilePic;
+        this.profile_pic = profilePic;
+        this.bio = bio;
     }
 
     public String getProfile_pic() {
@@ -101,6 +116,7 @@ public class User {
                 "name='" + name + '\'' +
                 ", id=" + id +
                 ", firebaseId='" + firebaseId + '\'' +
+                ", profile='" + profile_pic + '\'' +
                 '}';
     }
 }

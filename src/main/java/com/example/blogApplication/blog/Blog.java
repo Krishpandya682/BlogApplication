@@ -32,8 +32,8 @@ public class Blog {
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "creator_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "creator_id", nullable = false)
     @JsonIgnore
     private User creator;
     private String url;
@@ -43,6 +43,7 @@ public class Blog {
     @OneToMany
     private List<Comment> commentList;
     private String title;
+    @Column(columnDefinition="TEXT")
     private String content;
     @UpdateTimestamp
     private LocalDateTime updated;

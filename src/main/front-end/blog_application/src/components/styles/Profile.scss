@@ -4,3 +4,34 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.imageContanier{
+    width: 40%;
+    margin: 1rem;
+}
+.user-profile-pic_profile_page {
+    width: 90% !important;
+    // height: 70% !important;
+    border-radius: 0% !important;
+    margin: 10px 0 !important;
+}
+
+.user_name {
+    font-size: 5rem;
+}
+
+.user_email{
+    font-size: 1rem;
+}
+.user_bio{
+    font-size: 2rem;
+}
+
+.profile_container{
+    padding: 2rem;
+    display: flex;
+}
+
+.edit_button{
+    display: flex;
+}

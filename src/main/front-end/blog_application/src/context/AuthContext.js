@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
 
 const AuthContext = React.createContext();
@@ -21,10 +22,17 @@ const signIn = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
+const signOutHandler= () => {
+  return signOut(auth).then(()=>{
+    console.log("Successfully Signed Out!");
+  });
+};
+
 export function AuthProvider({ children }) {
   const [currUser, setCurrUser] = useState(null);
   const [currDbUser, setCurrDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profileUpd, setProfileUpd] = useState(true);
   const navigate = useNavigate();
 
   const getDbUser = async (uid) => {
@@ -62,17 +70,21 @@ export function AuthProvider({ children }) {
         console.log("currDbUser set in context", currDbUser);
       } else {
         console.log("Firbase auth user is null");
+        setCurrUser(null)
         setLoading(false);
       }
     });
     return unsubscribe;
-  }, []);
+  }, [profileUpd]);
 
   const value = {
     currUser,
     currDbUser,
     signUp,
     signIn,
+    signOutHandler,
+    profileUpd,
+    setProfileUpd,
   };
 
   return (

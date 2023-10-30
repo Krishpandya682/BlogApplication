@@ -29,6 +29,16 @@ public class Comment {
     // Instance variables to store the blog post's information
     private int id;
 
+    public int getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(int replyTo) {
+        this.replyTo = replyTo;
+    }
+
+    private int replyTo;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "commentor_id", nullable = false)
@@ -54,6 +64,7 @@ public class Comment {
     @CreationTimestamp
     private LocalDateTime created;
 
+    @Column(columnDefinition="TEXT")
     private String comment;
     @UpdateTimestamp
     private LocalDateTime updated;
@@ -62,8 +73,9 @@ public class Comment {
     }
 
     // Constructor to create a new blog post with a title and content
-    public Comment(int id, User commentor, String title, String comment, String url, Blog blog) {
+    public Comment(int id, int replyTo, User commentor, String title, String comment, String url, Blog blog) {
         this.id = id;
+        this.replyTo = replyTo;
         this.commentor = commentor;
 
         this.comment = comment;

@@ -56,6 +56,13 @@ public class UserService {
 		if (user.getFirebaseId() != null) {
 			u.setFirebaseId(user.getFirebaseId());
 		}
+		if (user.getProfile_pic() != null) {
+			u.setProfile_pic(user.getProfile_pic());
+		}
+		if (user.getBio() != null) {
+			u.setBio(user.getBio());
+		}
+		System.out.println("New updated user is:- "+ u);
 		userRepository.save(u);
 	}
 

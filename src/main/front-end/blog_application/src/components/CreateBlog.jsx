@@ -3,8 +3,18 @@ import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosConfig";
 import MyNavbar from "./Navbar";
 import ReactLoading from "react-loading";
-import './styles/CreateBlog.scss'
+import "./styles/CreateBlog.scss";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { storage } from "../firebase";
+import { v4 } from "uuid";
 
 export function CreateBlog() {
   const navigate = useNavigate();
@@ -12,38 +22,51 @@ export function CreateBlog() {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [url, setUrl] = useState("");
-
+  const [imgUpload, setImgUpload] = useState(null);
+  let imageRef = null;
   const handleCreateBlog = async (e) => {
     e.preventDefault();
-    const data = {
+    let data = {
       title: title,
       content: content,
-      url: url,
       creator_id: currDbUser.id,
     };
+    console.log("Method called");
+    if (imgUpload != null) {
+      console.log("Image is not null", imgUpload);
+      const fileName = "blog_images/" + imgUpload.name + v4();
+      imageRef = ref(storage, "images/" + fileName);
 
-    if (!title || !content || !url) {
+      console.log("ref is ", imageRef);
+
+      setLoading(true);
+      await uploadBytes(imageRef, imgUpload);
+
+      console.log("Upload promise returned");
+      const downloadUrl = await getDownloadURL(imageRef);
+      console.log("Got the Image URL:-", downloadUrl);
+      data.url = downloadUrl;
+    }
+
+    if (!title || !content) {
       alert("Please fill in all fields.");
       return;
     }
-    setLoading(true);
-    const response = await api
-      .post(`/api/v1/blog/${currDbUser.id}`, data)
-      .then((response) => {
-        setLoading(false);
-        console.log(response.data)
-        if (response.status === 200) {
-          alert("Blog created successfully!");
-          navigate("/blogs/"+response.data);
-          // You can redirect the user or perform other actions here
-        } else {
-          console.log("Error:", response.statusText);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    try {
+      const response = await api.post(`/api/v1/blog/${currDbUser.id}`, data);
+      setLoading(false);
+      console.log(response.data);
+      if (response.status === 200) {
+        alert("Blog created successfully!");
+        navigate("/blogs/" + response.data);
+        // You can redirect the user or perform other actions here
+      } else {
+        console.log("Error:", response.statusText);
+      }
+    } catch (error) {
+      deleteObject(imageRef).then(() => {});
+      console.error(error);
+    }
   };
 
   if (loading) {
@@ -71,6 +94,7 @@ export function CreateBlog() {
           </div>
           <div className="form-group">
             <label>Content</label>
+            <ReactQuill></ReactQuill>
             <textarea
               className="form-control"
               rows="5"
@@ -79,14 +103,14 @@ export function CreateBlog() {
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
-          <div className="form-group">
-            <label>URL</label>
+          <div className="form-group mt-3">
+            <label>Profile Pic</label>
             <input
-              type="text"
-              className="form-control"
-              placeholder="Enter a URL"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
+              type="file"
+              className="form-control mt-1"
+              onChange={(e) => {
+                setImgUpload(e.target.files[0]);
+              }}
             />
           </div>
           <button type="submit" className="btn btn-primary">

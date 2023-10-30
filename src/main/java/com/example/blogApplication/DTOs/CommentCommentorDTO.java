@@ -3,41 +3,62 @@ package com.example.blogApplication.DTOs;
 import java.time.LocalDateTime;
 
 public class CommentCommentorDTO {
-    private String blog_title;
-    private String creator_name;
+
+    private String commentor_name;
     private LocalDateTime updated;
     private int blog_id;
-    private int user_id;
-    private String img_url;
-    private String user_profile_pic;
-    private String content;
 
-    public CommentCommentorDTO(String blog_title, String creator_name, LocalDateTime updated, int blog_id, int user_id, String imgUrl, String userProfilePic, String content) {
-        this.blog_title = blog_title;
-        this.creator_name = creator_name;
+    public int getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(int replyTo) {
+        this.replyTo = replyTo;
+    }
+
+    public int getComment_id() {
+        return comment_id;
+    }
+
+    public void setComment_id(int comment_id) {
+        this.comment_id = comment_id;
+    }
+
+    public CommentCommentorDTO( int commentId, String commentor_name, LocalDateTime updated, int blog_id, int user_id,  String user_profile_pic, String comment, int replyTo) {
+
+
+        this.comment_id = commentId;
+        this.commentor_name = commentor_name;
         this.updated = updated;
         this.blog_id = blog_id;
         this.user_id = user_id;
-        this.img_url = imgUrl;
-        this.user_profile_pic = userProfilePic;
-        this.content = content;
+        this.user_profile_pic = user_profile_pic;
+        this.comment = comment;
+        this.replyTo = replyTo;
     }
 
-    public String getBlog_title() {
-        return blog_title;
+    private int user_id;
+    private int comment_id;
+    private String user_profile_pic;
+    private String comment;
+    private int replyTo;
+
+    public String getCommentor_name() {
+        return commentor_name;
     }
 
-    public void setBlog_title(String blog_title) {
-        this.blog_title = blog_title;
+    public void setCommentor_name(String commentor_name) {
+        this.commentor_name = commentor_name;
     }
 
-    public String getCreator_name() {
-        return creator_name;
+    public String getComment() {
+        return comment;
     }
 
-    public void setCreator_name(String creator_name) {
-        this.creator_name = creator_name;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
+
 
     public LocalDateTime getUpdated() {
         return updated;
@@ -63,21 +84,6 @@ public class CommentCommentorDTO {
         this.user_id = user_id;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImg_url() {
-        return img_url;
-    }
-
-    public void setImg_url(String img_url) {
-        this.img_url = img_url;
-    }
 
     public String getUser_profile_pic() {
         return user_profile_pic;
