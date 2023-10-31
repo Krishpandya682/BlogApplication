@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axiosConfig";
 import MyNavbar from "./Navbar";
@@ -6,7 +6,7 @@ import ReactLoading from "react-loading";
 import "./styles/CreateBlog.scss";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
-
+import "react-quill/dist/quill.snow.css";
 import {
   ref,
   uploadBytes,
@@ -15,14 +15,22 @@ import {
 } from "firebase/storage";
 import { storage } from "../firebase";
 import { v4 } from "uuid";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+import CreatableSelect from "react-select/creatable";
+
+const animatedComponents = makeAnimated();
 
 export function CreateBlog() {
   const navigate = useNavigate();
   const { currDbUser } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [categories, setCategories] = useState();
+  const [selectCategories, setSelectCategories] = useState([]);
   const [imgUpload, setImgUpload] = useState(null);
+  const [selectedOptions, setSelectedOptions] = useState();
   let imageRef = null;
   const handleCreateBlog = async (e) => {
     e.preventDefault();
@@ -48,16 +56,44 @@ export function CreateBlog() {
       data.url = downloadUrl;
     }
 
-    if (!title || !content) {
+    if (!title || !content || !selectedOptions) {
       alert("Please fill in all fields.");
       return;
     }
+
     try {
       const response = await api.post(`/api/v1/blog/${currDbUser.id}`, data);
-      setLoading(false);
+
       console.log(response.data);
       if (response.status === 200) {
-        alert("Blog created successfully!");
+        console.log(
+          "Blog added successfully, now adding categories!"
+        )
+        const blogCategories = {
+          blogId: response.data,
+          categories: [],
+        };
+        selectedOptions.forEach((opt) => {
+          blogCategories.categories.push(opt.value);
+        });
+
+        try {
+          const addCatsResponse = await api.post(
+            "api/v1/category/AddBlogCategories",
+            blogCategories
+          );
+          console.log(
+            "Categories added!"
+          )
+          setLoading(false);
+          alert("Blog created successfully!");
+
+        } catch (error) {
+          setLoading(false);
+          deleteObject(imageRef).then(() => {});
+          console.error(error);
+        }
+
         navigate("/blogs/" + response.data);
         // You can redirect the user or perform other actions here
       } else {
@@ -68,6 +104,40 @@ export function CreateBlog() {
       console.error(error);
     }
   };
+
+  const handleCreate = (inputValue) => {
+    setLoading(true);
+
+    let data = {
+      categoryName: inputValue,
+    };
+    api.post("/api/v1/category/", data).then((response) => {
+      const newOption = { value: response, label: inputValue };
+      setLoading(false);
+      setSelectCategories((prev) => [...prev, newOption]);
+    });
+  };
+
+  useEffect(() => {
+    api.get("/api/v1/category/").then((response) => {
+      setCategories(response.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log("Selected Options Updated:-", selectedOptions);
+  }, [selectedOptions]);
+
+  useEffect(() => {
+    if (categories) {
+      let arr = [];
+      categories.map((cat) => {
+        arr.push({ value: cat.id, label: cat.categoryName });
+      });
+      setSelectCategories(arr);
+      setLoading(false);
+    }
+  }, [categories]);
 
   if (loading) {
     return (
@@ -92,19 +162,29 @@ export function CreateBlog() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
+
+          <div className="form-group">
+            <CreatableSelect
+              closeMenuOnSelect={false}
+              components={animatedComponents}
+              onChange={(newSelected) => setSelectedOptions(newSelected)}
+              isMulti
+              options={selectCategories}
+              onCreateOption={handleCreate}
+            />
+          </div>
+
           <div className="form-group">
             <label>Content</label>
-            <ReactQuill></ReactQuill>
-            <textarea
-              className="form-control"
-              rows="5"
-              placeholder="Write your blog content"
+            <ReactQuill
+              theme="snow"
+              placeholder="Write your blog"
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={setContent}
             />
           </div>
           <div className="form-group mt-3">
-            <label>Profile Pic</label>
+            <label>Add Blog Image</label>
             <input
               type="file"
               className="form-control mt-1"

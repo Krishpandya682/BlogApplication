@@ -12,5 +12,5 @@ public interface BlogRepository extends JpaRepository<Blog, Integer> {
 
     List<Blog> findAllByOrderByCreatedDesc();
 
-
+     List<Blog> findAllByCategoriesId(int catId);
 }

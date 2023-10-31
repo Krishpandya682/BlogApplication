@@ -1,12 +1,16 @@
 package com.example.blogApplication.blog;
 
+import com.example.blogApplication.DTOs.BlogCategoriesDTO;
 import com.example.blogApplication.DTOs.BlogCreatorDTO;
+import com.example.blogApplication.categories.Category;
+import com.example.blogApplication.categories.CategoryRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +19,15 @@ import java.util.Optional;
 public class BlogService {
 
 	private final BlogRepository blogRepository;
+	private final CategoryRepository categoryRepository;
 
 
 	@PersistenceContext
 	private EntityManager entityManager;
 	@Autowired
-	public BlogService(BlogRepository blogRepositoryRepository) {
+	public BlogService(BlogRepository blogRepositoryRepository, CategoryRepository categoryRepository) {
 		this.blogRepository = blogRepositoryRepository;
+		this.categoryRepository = categoryRepository;
 	}
 
 
@@ -82,7 +88,12 @@ public class BlogService {
 		TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
 		query.setParameter("blogId", blogId);
 		try {
-			return query.getSingleResult();
+			BlogCreatorDTO b = query.getSingleResult();
+			for (Category c:categoryRepository.findAllByBlogsId(blogId)
+				 ) {
+				b.addCategories(c);
+			}
+			return b;
 		} catch (NoResultException e) {
 			throw e; // Handle the case where the blog with the given ID doesn't exist.
 		}
@@ -90,7 +101,8 @@ public class BlogService {
 
 	public List<BlogCreatorDTO> getBlogsCreatorDtoDesc() {
 		String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
-				"FROM Blog b LEFT JOIN b.creator u ORDER BY b.created DESC";
+				"FROM Blog b LEFT JOIN b.creator u " +
+				"ORDER BY b.created DESC";
 		TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
 
 		try {
@@ -98,5 +110,30 @@ public class BlogService {
 		} catch (NoResultException e) {
 			throw e; // Handle the case where the blog with the given ID doesn't exist.
 		}
+	}
+
+	public List<Blog> getBlogByCategory(int catId) {
+		return blogRepository.findAllByCategoriesId(catId);
+	}
+
+
+	public void addCategoryToBlog(String catId, String blogId) {
+		Optional<Blog> b = blogRepository.findById(Integer.valueOf(blogId));
+		if(!b.isPresent()){
+			throw new IllegalArgumentException("The blog does not exist");
+		}else{
+
+		}
+	}
+
+
+	public void addCategoriesToBlog(BlogCategoriesDTO blogCategories) {
+		Blog b = blogRepository.findById(blogCategories.getBlogId()).orElseThrow(()->{throw new IllegalArgumentException("Blog not found!!");});
+		for (int c: blogCategories.getCategories()
+			 ) {
+			Category cat = categoryRepository.findById(c).orElseThrow(()->{throw new IllegalArgumentException("Category not found!!");});
+			b.getCategories().add(cat);
+		}
+		blogRepository.save(b);
 	}
 }

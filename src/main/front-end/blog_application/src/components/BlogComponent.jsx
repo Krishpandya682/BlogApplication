@@ -19,6 +19,9 @@ import { lastUpdated } from "./helperFunctions";
 import { FaEdit } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 
+import ReactMarkdown from "react-markdown";
+import DOMPurify from "dompurify";
+
 const BlogComponent = ({ id }) => {
   const navigate = useNavigate();
   const [blog, setBlog] = useState();
@@ -110,7 +113,11 @@ const BlogComponent = ({ id }) => {
             <img className="blog-image" src={blog.img_url} alt="Blog Image" />
           </div>
           <div className="content_text">
-            <div>{blog.content}</div>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(blog.content),
+              }}
+            />
           </div>
         </div>
         <p className="last-updated">

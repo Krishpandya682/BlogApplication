@@ -4,6 +4,8 @@ import api from "../api/axiosConfig";
 import MyNavbar from "./Navbar";
 import ReactLoading from "react-loading";
 import "./styles/EditBlog.scss";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 import {
   ref,
@@ -95,12 +97,11 @@ export function EditBlog({ blog }) {
           </div>
           <div className="form-group">
             <label>Content</label>
-            <textarea
-              className="form-control"
-              rows="5"
-              defaultValue={blog.content}
-              onChange={(e) => setContent(e.target.value)}
-            />
+
+              <ReactQuill
+                defaultValue={blog.content}
+                onChange={setContent}
+              />
           </div>
           <div className="form-group mt-3">
             <label>Profile Pic</label>

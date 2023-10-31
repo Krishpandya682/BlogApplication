@@ -78,7 +78,6 @@ public class BlogController {
 	@GetMapping("/{blogId}/BlogCreatorInfo")
 	public BlogCreatorDTO getBlogAndCreator(@PathVariable int blogId) {
 		return blogService.getBlogAndCreator(blogId);
-
-
 	}
+
 }

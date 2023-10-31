@@ -1,5 +1,6 @@
 package com.example.blogApplication.blog;
 
+import com.example.blogApplication.categories.Category;
 import com.example.blogApplication.comments.Comment;
 import com.example.blogApplication.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,6 +37,32 @@ public class Blog {
     @JoinColumn(name = "creator_id", nullable = false)
     @JsonIgnore
     private User creator;
+
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinTable(name = "blog_category_table",
+    joinColumns = {
+            @JoinColumn(name = "blog_id", referencedColumnName = "id")
+    },inverseJoinColumns = {
+            @JoinColumn(name = "category_id", referencedColumnName = "id")
+    })
+    private List<Category> categories;
     private String url;
     @CreationTimestamp
     private LocalDateTime created;
@@ -52,9 +79,10 @@ public class Blog {
     }
 
     // Constructor to create a new blog post with a title and content
-    public Blog(int id, User creator, String title, String content, String url) {
+    public Blog(int id, User creator, List<Category> categories, String title, String content, String url) {
         this.id = id;
         this.creator = creator;
+        this.categories = categories;
         this.title = title;
         this.content = content;
         this.url = url;

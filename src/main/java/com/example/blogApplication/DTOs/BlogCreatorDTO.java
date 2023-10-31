@@ -1,6 +1,10 @@
 package com.example.blogApplication.DTOs;
 
+import com.example.blogApplication.categories.Category;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlogCreatorDTO {
     private String blog_title;
@@ -11,6 +15,15 @@ public class BlogCreatorDTO {
     private String img_url;
     private String user_profile_pic;
     private String content;
+     private    List<Category> categories = new ArrayList<>();
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void addCategories(Category category) {
+        this.categories.add(category);
+    }
 
     public BlogCreatorDTO(String blog_title, String creator_name, LocalDateTime updated, int blog_id, int user_id, String imgUrl, String userProfilePic, String content) {
         this.blog_title = blog_title;
@@ -21,6 +34,7 @@ public class BlogCreatorDTO {
         this.img_url = imgUrl;
         this.user_profile_pic = userProfilePic;
         this.content = content;
+//        System.out.println("Concat worked as:- "+concat);
     }
 
     public String getBlog_title() {
