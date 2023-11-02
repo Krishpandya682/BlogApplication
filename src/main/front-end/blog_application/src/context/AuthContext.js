@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from "firebase/auth";
 
 const AuthContext = React.createContext();
@@ -22,8 +22,8 @@ const signIn = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-const signOutHandler= () => {
-  return signOut(auth).then(()=>{
+const signOutHandler = () => {
+  return signOut(auth).then(() => {
     console.log("Successfully Signed Out!");
   });
 };
@@ -31,6 +31,7 @@ const signOutHandler= () => {
 export function AuthProvider({ children }) {
   const [currUser, setCurrUser] = useState(null);
   const [currDbUser, setCurrDbUser] = useState(null);
+  const [signingUp, setSigningUp] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profileUpd, setProfileUpd] = useState(true);
   const navigate = useNavigate();
@@ -52,17 +53,22 @@ export function AuthProvider({ children }) {
       return;
     }
     setCurrUser(user);
-    getDbUser(user.uid).then(() => {
-      setLoading(false);
-    }).catch((e) =>{
-      console.log("Error in getting the Database User")
-      console.log(e);
-      navigate("/signin");
-      setLoading(false)
-    } );
+    getDbUser(user.uid)
+      .then(() => {
+        setLoading(false);
+      })
+      .catch((e) => {
+        console.log("Error in getting the Database User");
+        console.log(e);
+        if (!signingUp) {
+          navigate("/signin");
+        }
+        setLoading(false);
+      });
   }
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    setLoading(true);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       console.log("firbase auth change User is", user);
       if (user) {
         setUpUser(user);
@@ -70,7 +76,7 @@ export function AuthProvider({ children }) {
         console.log("currDbUser set in context", currDbUser);
       } else {
         console.log("Firbase auth user is null");
-        setCurrUser(null)
+        setCurrUser(null);
         setLoading(false);
       }
     });
@@ -83,6 +89,7 @@ export function AuthProvider({ children }) {
     signUp,
     signIn,
     signOutHandler,
+    setSigningUp,
     profileUpd,
     setProfileUpd,
   };

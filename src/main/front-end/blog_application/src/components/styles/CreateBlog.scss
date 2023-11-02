@@ -1,3 +1,40 @@
-.blog_creation_form{
-    margin: 90px;
+@import "./variables";
+
+
+.create_page_container{
+    @include flexCenter(100, 2rem);
+    margin-top: $navbarHeight+10px;
+}
+
+.blog_creation_form {
+    width: 80%;
+    border: 1px solid black;
+    padding: 4rem;
+    border-radius: 2rem;
+}
+
+.button_group {
+    @include flexCenter(100, 1rem);
+
+    button {
+        // width: 50%;
+    }
+}
+
+.form-group{
+    margin-top: 2rem;
+}
+
+.input{
+    width: 100%;
+    padding: 0.5rem;
+}
+
+.quill{
+    height: 18rem;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
 }

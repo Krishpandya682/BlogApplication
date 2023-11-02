@@ -5,6 +5,7 @@ import com.example.blogApplication.user.User;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -26,7 +27,7 @@ public class Category {
     private String categoryName;
 
     @ManyToMany(mappedBy = "categories")
-    private List<Blog> blogs;
+    private Set<Blog> blogs;
 
     public Category() {
     }
@@ -54,5 +55,9 @@ public class Category {
         this.categoryName = categoryName;
     }
 
+    @Override
+    public String toString() {
+        return "Category: {Id: " + this.id + ", categoryName: " + this.categoryName +"}";
+    }
 }
 

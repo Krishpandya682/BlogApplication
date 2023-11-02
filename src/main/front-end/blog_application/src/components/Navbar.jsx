@@ -1,15 +1,16 @@
+import { useEffect, useState } from "react";
+import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
-import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import "./styles/navbar.css";
 
 function MyNavbar() {
-  const [authText, setAuthText] = useState("SignOut")
-  const { setProfileUpd, profileUpd, currUser, signOutHandler } = useAuth();
+  const [authText, setAuthText] = useState("SignOut");
+  const { setProfileUpd, profileUpd, currUser, signOutHandler, currDbUser } =
+    useAuth();
 
   const navigate = useNavigate();
   async function handleLogout() {
@@ -22,22 +23,21 @@ function MyNavbar() {
 
   useEffect(() => {
     if (currUser) {
-      
-    setAuthText("Sign Out")
-    }else{
-    setAuthText("Sign In")}
-  }, [currUser])
-  
+      setAuthText("Sign Out");
+    } else {
+      setAuthText("Sign In");
+    }
+  }, [currUser]);
+
   return (
     <Navbar
-      className="justify-content-between"
+      className="myNav justify-content-between"
       collapseOnSelect
       fixed="top"
       expand="sm"
-      bg="dark"
       variant="dark"
     >
-      <Container>
+      <Container className="w-100 myNav">
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav>
@@ -45,7 +45,16 @@ function MyNavbar() {
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
-          <Button onClick={handleLogout}>
+          { currDbUser &&
+            <a href="/Profile">
+              <img
+                className="navbar_profile_pic"
+                src={currDbUser.profile_pic}
+                alt={currDbUser.name + " Profile Picture"}
+              />
+            </a>
+          }
+          <Button className="myButton" onClick={handleLogout}>
             <Navbar.Text>{authText}</Navbar.Text>
           </Button>
         </Navbar.Collapse>

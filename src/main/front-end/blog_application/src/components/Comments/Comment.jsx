@@ -1,13 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
-import { lastUpdated } from "./helperFunctions";
-import Button from "react-bootstrap/esm/Button";
-import {} from "./styles/Comment.scss";
 import Card from "react-bootstrap/Card";
-import PostComment from "./PostComment";
+import Button from "react-bootstrap/esm/Button";
+import api from "../../api/axiosConfig";
 import CommentReplies from "./CommentReplies";
-import api from "../api/axiosConfig";
+import PostComment from "./PostComment";
+import { lastUpdated } from "../helperFunctions";
+import "../styles/Comment.scss";
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { useAuth } from "../../context/AuthContext";
+import { CommentContext } from "../../context/CommentContext";
 
 const Comment = ({ comment }) => {
+  const { commentUpd , setCommentUpd, setBlogCommentLoading} =
+    useContext(CommentContext);
+  const { currDbUser } = useAuth();
   const [showFormButton, setShowFormButton] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
@@ -23,6 +30,40 @@ const Comment = ({ comment }) => {
     setShowForm(!showForm);
     setShowFormButton(!showFormButton);
   };
+
+  function handleDeleteButtonClick(e) {
+    e.preventDefault();
+    confirmAlert({
+      title: "Delete Confirmation",
+      message: "Are you sure to delete this comment?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => deleteComment(),
+        },
+        {
+          label: "No",
+          onClick: () => {
+            return;
+          },
+        },
+      ],
+    });
+  }
+
+  function deleteComment() {
+    setBlogCommentLoading(true);
+    api
+      .delete("api/v1/comment/" + comment.comment_id)
+      .then((response) => {
+        console.log(response.data);
+        
+        setCommentUpd(commentUpd+1);
+        setBlogCommentLoading(false);
+        return;
+      })
+      .catch();
+  }
   useEffect(() => {
     // if (commentPosted) {
     //   showForm = false;
@@ -50,6 +91,11 @@ const Comment = ({ comment }) => {
               alt="User Profile Picture"
             />
             <div className="commentor_name">{comment.commentor_name}</div>
+            {comment.user_id === currDbUser.id && (
+              <div className="pl-5" onClick={handleDeleteButtonClick}>
+                DELETE
+              </div>
+            )}
           </div>
           <div className="comment_content">
             <Card.Text className="px-2">

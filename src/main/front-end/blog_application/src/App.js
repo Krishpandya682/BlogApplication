@@ -1,18 +1,16 @@
-import logo from "./logo.svg";
-import "./App.css";
-import api from "./api/axiosConfig";
-import { useState, useEffect } from "react";
-import Auth from "./components/auth/SignUp";
-import Home from "./components/Home";
 import { Route, Routes } from "react-router-dom";
-import {AuthProvider} from './context/AuthContext'
+import "./App.css";
+import { AuthProvider } from './context/AuthContext';
+import BlogFull from "./components/BlogDetails/BlogFull";
+import CreateBlog from "./components/BlogDetails/CreateBlog";
+import Profile from "./components/profile/Profile";
+import EditProfile from "./components/profile/EditProfile";
+import Blogs from "./components/blogsList/Blogs";
 import SignIn from "./components/auth/SignIn";
 import SignUp from "./components/auth/SignUp";
-import Profile from "./components/Profile";
-import EditProfile from "./components/EditProfile";
-import Blogs from "./components/Blogs";
-import BlogFull from "./components/BlogFull";
-import CreateBlog from "./components/CreateBlog";
+import Home from "./components/Home";
+
+
 function App() {
   // const [users, setUsers] = useState();
   // const postUser = async (formData) => {
@@ -67,7 +65,8 @@ function App() {
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/editProfile" element={<EditProfile />}></Route>
         <Route path="/blogs" element={<Blogs />}></Route>
-        <Route path="/blogs/:id" element={<BlogFull />}></Route>
+        <Route path="/blogs/:catId" element={<Blogs />}></Route>
+        <Route path="/blog/:id" element={<BlogFull />}></Route>
         <Route path="/createBlog" element={<CreateBlog />}></Route>
         <Route path="/signIn" element={<SignIn />}></Route>
         <Route path="/signUp" element={<SignUp />}></Route>

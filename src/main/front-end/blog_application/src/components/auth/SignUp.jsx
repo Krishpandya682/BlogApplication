@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../styles/AuthPage.scss";
+import "../styles/AuthPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../api/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
@@ -10,7 +10,7 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { auth, storage } from "../../firebase";
+import { storage } from "../../firebase";
 import { v4 } from "uuid";
 
 export default function (props) {
@@ -18,14 +18,20 @@ export default function (props) {
   let [email, setEmail] = useState();
   let [password, setPassword] = useState();
   let [fullName, setFullName] = useState();
+  const [error, setError] = useState();
   let [bio, setBio] = useState();
-  const { signUp } = useAuth();
+  const { signUp, setSigningUp } = useAuth();
   const [imgUpload, setImgUpload] = useState(null);
-
 
   async function handleSignUp(e) {
     e.preventDefault();
+    setSigningUp(true);
     console.log("handling signup");
+
+    if (imgUpload == null) {
+      setError("Profile Picture can not be empty!");
+      return;
+    }
     const usercreds = await signUp(email, password);
     console.log("FB UID= ");
     console.log(usercreds.user.uid);
@@ -33,12 +39,9 @@ export default function (props) {
     console.log(email);
 
     console.log("Method called");
-    if (imgUpload == null) {
-      return;
-    }
 
     console.log("Image is not null", imgUpload);
-    const fileName = "profile_pic/"+imgUpload.name + v4();
+    const fileName = "profile_pic/" + imgUpload.name + v4();
     const imageRef = ref(storage, "images/" + fileName);
 
     console.log("ref is ", imageRef);
@@ -69,16 +72,26 @@ export default function (props) {
               .catch((error) => {
                 deleteObject(imageRef).then(() => {});
                 console.error(error);
+
+                setError("Could not create user!");
+                return;
               });
           })
           .catch(() => {
             console.log("Download URL could not be retrieved");
             deleteObject(imageRef).then(() => {});
+
+            setError("Can't access your profile picture!");
+            return;
           });
       })
       .catch((e) => {
         console.log("ERROR:- ", e);
+        setError(
+          "Your profile picture could not be saved, try a different image!"
+        );
       });
+      setSigningUp(false);
   }
 
   return (
@@ -90,6 +103,7 @@ export default function (props) {
             <div className="Auth-form-title">
               <h2>Sign Up</h2>
             </div>
+            {error && <div className="error_group">{error}</div>}
             <div className="form-group mt-3">
               <label>Profile Pic</label>
               <input
@@ -100,9 +114,7 @@ export default function (props) {
                 }}
               />
             </div>
-            <div className="text-center">
-              Already registered? <Link to="/signIn">Sign In</Link>
-            </div>
+
             <div className="form-group mt-3">
               <label>Full Name</label>
               <input
@@ -113,8 +125,10 @@ export default function (props) {
                 onChange={(e) => {
                   setFullName(e.target.value);
                 }}
+                required
               />
-            </div><div className="form-group mt-3">
+            </div>
+            <div className="form-group mt-3">
               <label>Bio</label>
               <input
                 type="text"
@@ -136,6 +150,7 @@ export default function (props) {
                 onChange={(e) => {
                   setEmail(e.target.value);
                 }}
+                required
               />
             </div>
             <div className="form-group mt-3">
@@ -148,14 +163,18 @@ export default function (props) {
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
+                required
               />
             </div>
-            <div className="d-grid gap-2 mt-3">
+            <div className="button_group">
               <button className="btn btn-primary">Submit</button>
             </div>
-            <p className="text-center mt-2">
+            <div className="text-center">
+              Already registered? <Link to="/signIn">Sign In</Link>
+            </div>
+            {/* <p className="text-center mt-2">
               Forgot <a href="#">password?</a>
-            </p>
+            </p> */}
           </div>
         </form>
       </div>

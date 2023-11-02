@@ -1,0 +1,81 @@
+:root {
+  /* Font size variables */
+  --small: 12px;
+  --medium: 16px;
+  --large: 24px;
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.imageContanier {
+  width: 30%;
+  margin: 1rem;
+}
+
+.user-profile-pic_profile_page {
+  border: 2px solid #121212;
+  height: 20rem !important;
+  width: 100% !important;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 0% !important;
+  margin: 10px 0 !important;
+  -o-object-position: center;
+     object-position: center;
+  border-radius: 2% !important;
+}
+
+.user_name {
+  font-size: 5rem;
+}
+
+.user_email {
+  font-size: 1rem;
+}
+
+.user_bio {
+  font-size: 2rem;
+}
+
+.profile_container {
+  padding: 2rem;
+  display: flex;
+}
+@media (max-width: 576px) {
+  .profile_container {
+    flex-direction: column;
+  }
+}
+@media (min-width: 576px) {
+  .profile_container {
+    flex-direction: column;
+  }
+}
+@media (min-width: 768px) {
+  .profile_container {
+    flex-direction: column;
+  }
+}
+@media (min-width: 992px) {
+  .profile_container {
+    flex-direction: row;
+  }
+}
+@media (min-width: 1200px) {
+  .profile_container {
+    flex-direction: row;
+  }
+}
+
+.edit_button {
+  display: flex;
+}
+
+.user_info {
+  padding: 2rem;
+}/*# sourceMappingURL=Profile.css.map */

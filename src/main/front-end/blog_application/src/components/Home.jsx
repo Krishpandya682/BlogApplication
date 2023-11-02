@@ -1,18 +1,18 @@
-import { onAuthStateChanged } from "firebase/auth";
-import React from "react";
-import { useState, useEffect } from "react";
-import { auth } from "../firebase";
+import React, { useEffect, useState } from "react";
+import ReactLoading from "react-loading";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
-import ReactLoading from "react-loading";
 import MyNavbar from "./Navbar";
+import Blogs from "./blogsList/Blogs";
+import Button from "react-bootstrap/esm/Button";
 
 export const Home = () => {
   const navigate = useNavigate();
   const { currUser } = useAuth();
   const [currDbUser, setCurrDbUser] = useState();
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState();
 
   const getCurrUser = async () => {
     console.log("Current User from context is", currUser);
@@ -23,7 +23,10 @@ export const Home = () => {
       .then((response) => {
         console.log("API Response:", response.data);
         setCurrDbUser(response.data);
-        setLoading(false);
+        api.get("/api/v1/category/").then((response) => {
+          setCategories(response.data);
+          setLoading(false);
+        });
       })
       .catch((e) => {
         console.log(e);
@@ -51,13 +54,21 @@ export const Home = () => {
   return (
     <div className="flex d-flex flex-column">
       <MyNavbar />
-      <div>
-        {" "}
-        <div>Home</div>
-        <div>{currUser ? <p>Signed In</p> : <p>Signed Out</p>}</div>
-        <div>
-          <p>{currDbUser.email}</p>
-          <p>{currDbUser.name}</p>
+      <div className="d-flex flex-column">
+        <div className="create_blog_btn mt-3">
+          <Button href="/createBlog">Create Blog</Button>
+        </div>{" "}
+        <div className="blogs">
+          <Blogs />
+        </div>
+        <div className="categories_list">
+          {categories.map((cat) => {
+            return (
+              <div>
+                <a href={"/blogs/" + cat.id}>{cat.categoryName}</a>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -1,0 +1,36 @@
+.card-overlay {
+  margin: 30px;
+  padding: 30px;
+  background-color: white;
+  opacity: 0.85;
+  color: black;
+}
+
+.card-title {
+  font-size: 30px !important;
+}
+
+.mycard {
+  height: 400px !important;
+  font-size: large !important;
+}
+
+.card-img {
+  height: 400px !important;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+  -o-object-position: 50% 50% !important;
+     object-position: 50% 50% !important;
+}
+
+.top {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.bottom {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  width: 100%;
+}/*# sourceMappingURL=blogCard.css.map */

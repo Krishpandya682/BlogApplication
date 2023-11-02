@@ -1,0 +1,86 @@
+$spider-100: #121212;
+$spider-200: #302f33;
+$spider-300: #ffd8d6;
+$spider-400: #a82749;
+$spider-500: #63051e;
+
+:root {
+    /* Font size variables */
+    --small: 12px;
+    --medium: 16px;
+    --large: 24px;
+  }
+
+$navbarHeight: 70px;
+
+// Small tablets and large smartphones (landscape view)
+$screen-sm-min: 576px;
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Tablets and small desktops
+$screen-lg-min: 992px;
+
+// Large tablets and desktops
+$screen-xl-min: 1200px;
+
+// Small devices
+@mixin xs {
+    @media (max-width: #{$screen-sm-min}) {
+        @content;
+    }
+ }
+ 
+@mixin sm {
+    @media (min-width: #{$screen-sm-min}) {
+        @content;
+    }
+ }
+ 
+ // Medium devices
+ @mixin md {
+    @media (min-width: #{$screen-md-min}) {
+        @content;
+    }
+ }
+ 
+ // Large devices
+ @mixin lg {
+    @media (min-width: #{$screen-lg-min}) {
+        @content;
+    }
+ }
+ 
+ // Extra large devices
+ @mixin xl {
+    @media (min-width: #{$screen-xl-min}) {
+        @content;
+    }
+ }
+@mixin flexCenter($width, $p) {
+    padding: $p;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: #{$width}#{'%'};
+}
+
+@mixin error() {
+
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+
+@mixin circle_profile_pic() {
+    display: flex;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+    margin: 0 10px;
+    object-fit: cover;
+}

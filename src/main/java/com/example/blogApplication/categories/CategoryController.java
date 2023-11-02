@@ -1,6 +1,7 @@
 package com.example.blogApplication.categories;
 
 import com.example.blogApplication.DTOs.BlogCategoriesDTO;
+import com.example.blogApplication.DTOs.BlogCreatorDTO;
 import com.example.blogApplication.blog.Blog;
 import com.example.blogApplication.blog.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class CategoryController {
 	}
 
 	@GetMapping("/blogByCategory/{catId}")
-	public List<Blog> getBlogByCategory(@PathVariable String catId) {
+	public List<BlogCreatorDTO> getBlogByCategory(@PathVariable String catId) {
 		return blogService.getBlogByCategory(Integer.parseInt(catId));
 //		return null;
 	}

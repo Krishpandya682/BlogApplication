@@ -1,0 +1,36 @@
+.blog_creation_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.form_group_footer {
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+}
+
+.editor {
+  position: relative;
+  width: 50%;
+  display: flex;
+  background-color: white;
+}
+
+.ql-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.editor-text {
+  height: 50%;
+  width: 100%;
+}/*# sourceMappingURL=EditBlog.css.map */

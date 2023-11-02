@@ -1,13 +1,10 @@
-import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import api from "../api/axiosConfig";
-import MyNavbar from "./Navbar";
+import React, { useContext, useState } from "react";
 import ReactLoading from "react-loading";
-import "./styles/PostComment.scss";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { CommentContext } from "../context/CommentContext";
-import { PostCommentContext } from "../context/PostComment";
+import api from "../../api/axiosConfig";
+import { useAuth } from "../../context/AuthContext";
+import { CommentContext } from "../../context/CommentContext";
+import "../styles/PostComment.css";
 
 export function PostComment({ blog_id, /*refreshComments,*/ reply_to }) {
   const { commentUpd, setCommentUpd, setBlogCommentLoading } =

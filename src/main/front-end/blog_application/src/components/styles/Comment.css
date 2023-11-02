@@ -1,0 +1,48 @@
+.comment_text {
+  font-size: 1.5rem;
+}
+
+.card_custom {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.comment_content {
+  padding-left: 3rem;
+  padding-top: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.user-profile-pic {
+  width: 10% !important;
+}
+
+.user_section {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.last_updated {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.card_links {
+  size: 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.replies_section {
+  padding-left: 5rem;
+}
+
+button {
+  font-size: small;
+}/*# sourceMappingURL=Comment.css.map */

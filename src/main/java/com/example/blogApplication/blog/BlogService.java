@@ -36,9 +36,19 @@ public class BlogService {
 		return blogRepository.findAll();
 	}
 
-	public List<Blog> getBlogByCreator(int creatorId) {
+	public List<BlogCreatorDTO> getBlogByCreator(int creatorId) {
 		// TODO Auto-generated method stub
-		return blogRepository.findAllByCreatorIdOrderByCreatedDesc(creatorId);
+		String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
+				"FROM Blog b LEFT JOIN b.creator u " +
+				"WHERE u.id = :creatorId " +
+				"ORDER BY b.created DESC" ;
+		TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
+		query.setParameter("creatorId", creatorId);
+		try {
+			return query.getResultList();
+		} catch (NoResultException e) {
+			throw e; // Handle the case where the blog with the given ID doesn't exist.
+		}
 	}
 
 	public int addNewBlog(Blog blog) {
@@ -112,8 +122,28 @@ public class BlogService {
 		}
 	}
 
-	public List<Blog> getBlogByCategory(int catId) {
-		return blogRepository.findAllByCategoriesId(catId);
+	public List<BlogCreatorDTO> getBlogByCategory(int catId) {
+//		String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
+//				"FROM Blog b LEFT JOIN b.creator u " +
+//				"LEFT JOIN b.categories cat " +
+//				"WHERE cat.id = :catId "+
+//				"ORDER BY b.created DESC";
+//		TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
+		String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
+				"FROM Blog b LEFT JOIN b.creator u " +
+				"LEFT JOIN b.categories cat " +
+				"WHERE cat.id = :catId "+
+				"ORDER BY b.created DESC";
+
+		TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
+		query.setParameter("catId", catId);
+
+		try {
+			return query.getResultList();
+//			return null;
+		} catch (NoResultException e) {
+			throw e; // Handle the case where the blog with the given ID doesn't exist.
+		}
 	}
 
 
@@ -129,6 +159,7 @@ public class BlogService {
 
 	public void addCategoriesToBlog(BlogCategoriesDTO blogCategories) {
 		Blog b = blogRepository.findById(blogCategories.getBlogId()).orElseThrow(()->{throw new IllegalArgumentException("Blog not found!!");});
+		b.getCategories().clear();
 		for (int c: blogCategories.getCategories()
 			 ) {
 			Category cat = categoryRepository.findById(c).orElseThrow(()->{throw new IllegalArgumentException("Category not found!!");});

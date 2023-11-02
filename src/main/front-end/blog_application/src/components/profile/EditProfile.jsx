@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import "./styles/AuthPage.scss";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import api from "../api/axiosConfig";
-import { useAuth } from "../context/AuthContext";
-import ReactLoading from "react-loading";
-import MyNavbar from "./Navbar";
 import {
+  deleteObject,
+  getDownloadURL,
   ref,
   uploadBytes,
-  getDownloadURL,
-  deleteObject,
 } from "firebase/storage";
-import { storage } from "../firebase";
+import React, { useState } from "react";
+import ReactLoading from "react-loading";
+import { useNavigate } from "react-router-dom";
 import { v4 } from "uuid";
+import api from "../../api/axiosConfig";
+import { useAuth } from "../../context/AuthContext";
+import { storage } from "../../firebase";
+import MyNavbar from "../Navbar";
+import "../styles/AuthPage.scss";
 
 export default function (props) {
   const navigate = useNavigate();

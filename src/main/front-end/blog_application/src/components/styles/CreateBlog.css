@@ -1,0 +1,47 @@
+:root {
+  /* Font size variables */
+  --small: 12px;
+  --medium: 16px;
+  --large: 24px;
+}
+
+.create_page_container {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 80px;
+}
+
+.blog_creation_form {
+  width: 80%;
+  border: 1px solid black;
+  padding: 4rem;
+  border-radius: 2rem;
+}
+
+.button_group {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.form-group {
+  margin-top: 2rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.quill {
+  height: 18rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}/*# sourceMappingURL=CreateBlog.css.map */

@@ -1,9 +1,26 @@
-.nav{
-    height: 60px;
-    background-color: black;
-    color: white;
+@import "./variables";
+
+.myNav {
+    height: $navbarHeight;
+    background-color: $spider-100;
+    color: $spider-300;
     display: flex;
     justify-content: space-between;
-    padding: 1rem;
-    padding-left: 1rem;
+    padding: 1rem !important;
+    // padding-left: 1rem;
+    width: 100%;
+}
+
+.navbar_profile_pic {
+    @include circle_profile_pic;
+}
+
+.myButton {
+    background-color: $spider-500 !important;
+    border: $spider-300 !important;
+    color: $spider-300 !important;
+}
+
+body{
+    margin-top: $navbarHeight;
 }

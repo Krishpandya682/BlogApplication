@@ -1,13 +1,10 @@
-import React from "react";
-import { useAuth } from "../context/AuthContext";
+import React, { useContext, useEffect, useState } from "react";
 import ReactLoading from "react-loading";
-import { useState, useEffect } from "react";
-import api from "../api/axiosConfig";
-import MyNavbar from "./Navbar";
-import { useContext } from "react";
-import { CommentContext } from "../context/CommentContext";
-import { lastUpdated } from "./helperFunctions";
-import Comment from "./Comment";
+import api from "../../api/axiosConfig";
+import { useAuth } from "../../context/AuthContext";
+import { CommentContext } from "../../context/CommentContext";
+import Comment from "../Comments/Comment";
+import MyNavbar from "../Navbar";
 
 export const BlogComments = ({ blog_id }) => {
   const { blogCommentLoading, setBlogCommentLoading, commentUpd } =

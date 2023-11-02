@@ -1,25 +1,21 @@
-import Card from "react-bootstrap/Card";
-import { onAuthStateChanged } from "firebase/auth";
-import React, { useState, useEffect, createContext, useContext } from "react";
-import { auth } from "../firebase";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import api from "../api/axiosConfig";
-import { useAuth } from "../context/AuthContext";
+import React, { useContext, useEffect, useState } from "react";
+import { AiOutlineClose, AiOutlineDelete } from "react-icons/ai";
+import { FaEdit } from "react-icons/fa";
 import ReactLoading from "react-loading";
-import "./styles/BlogComponent.scss";
-import MyNavbar from "./Navbar";
-import PostComment from "./PostComment";
+import { useNavigate } from "react-router-dom";
+import api from "../../api/axiosConfig";
+import { useAuth } from "../../context/AuthContext";
+import { CommentContextProvider } from "../../context/CommentContext";
+import { EditBlogContext } from "../../context/EditBlogContext";
 import BlogComments from "./BlogComments";
 import EditBlog from "./EditBlog";
-import Button from "react-bootstrap/Button";
-import { CommentContextProvider } from "../context/CommentContext";
-import { EditBlogContext } from "../context/EditBlogContext";
-import "./helperFunctions";
-import { lastUpdated } from "./helperFunctions";
-import { FaEdit } from "react-icons/fa";
-import { AiOutlineClose } from "react-icons/ai";
+import PostComment from "../Comments/PostComment";
+import "../helperFunctions";
+import { lastUpdated } from "../helperFunctions";
+import "../styles/BlogComponent.css";
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 
-import ReactMarkdown from "react-markdown";
 import DOMPurify from "dompurify";
 
 const BlogComponent = ({ id }) => {
@@ -61,6 +57,31 @@ const BlogComponent = ({ id }) => {
   const refreshBlogComments = () => {
     BlogComments.getBlogComments();
   };
+
+  function deleteBlog() {
+    api.delete("/api/v1/blog/" + id).then(() => {
+      navigate("/");
+    });
+  }
+  function handleDeleteButtonClick(e) {
+    e.preventDefault();
+    confirmAlert({
+      title: "Delete Confirmation",
+      message: "Are you sure to delete this blog?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => deleteBlog(),
+        },
+        {
+          label: "No",
+          onClick: () => {
+            return;
+          },
+        },
+      ],
+    });
+  }
   function handleEditButtonClick(e) {
     e.preventDefault();
     setEditing(!editing);
@@ -82,7 +103,13 @@ const BlogComponent = ({ id }) => {
           <div>
             <div className="edit_button">
               {!editing ? (
-                <FaEdit size="2rem" onClick={handleEditButtonClick} />
+                <div>
+                  <FaEdit size="2rem" onClick={handleEditButtonClick} />
+                  <AiOutlineDelete
+                    size="2rem"
+                    onClick={handleDeleteButtonClick}
+                  />
+                </div>
               ) : (
                 <AiOutlineClose size="2rem" onClick={handleEditButtonClick} />
               )}
@@ -109,8 +136,21 @@ const BlogComponent = ({ id }) => {
           </p>
         </div>
         <div className="content">
-          <div className="content-image">
-            <img className="blog-image" src={blog.img_url} alt="Blog Image" />
+          {blog.img_url && (
+            <div className="content-image">
+              <img className="blog-image" src={blog.img_url} alt="Blog Image" />
+            </div>
+          )}
+          <div className="tags">
+            Tags:-
+            {blog.categories.map((category) => {
+              console.log("Category is:-", category);
+              return (
+                <a id="category" href={"/blogs/" + category.id}>
+                  {category.categoryName}
+                </a>
+              );
+            })}
           </div>
           <div className="content_text">
             <div

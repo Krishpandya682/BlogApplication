@@ -1,6 +1,7 @@
 package com.example.blogApplication.blog;
 
 import com.example.blogApplication.DTOs.BlogCreatorDTO;
+import com.example.blogApplication.categories.CategoryService;
 import com.example.blogApplication.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,15 @@ public class BlogController {
 	private final BlogService blogService;
 
 	private final UserService userService;
+	private final CategoryService categoryService;
+
+
 	
 	@Autowired
-	public BlogController(BlogService blogService, UserService userService) {
+	public BlogController(BlogService blogService, UserService userService, CategoryService categoryService) {
 		this.blogService = blogService;
 		this.userService = userService;
+		this.categoryService = categoryService;
 	}
 
 	@GetMapping()
@@ -38,7 +43,7 @@ public class BlogController {
 	}
 
 	@GetMapping("/byCreator/{creatorId}")
-	public List<Blog> getBlogByCreator(@PathVariable String creatorId) {
+	public List<BlogCreatorDTO> getBlogByCreator(@PathVariable String creatorId) {
 		return blogService.getBlogByCreator(Integer.parseInt(creatorId));
 	}
 
@@ -64,14 +69,26 @@ public class BlogController {
 	}
 
 	@GetMapping("/user/{userId}/blogs")
-	public List<Blog> getAllBlogsByUser(@PathVariable(value = "userId") int userId) {
+	public List<BlogCreatorDTO> getAllBlogsByUser(@PathVariable(value = "userId") int userId) {
 		try {
 			userService.getUser(userId);
 		} catch (Error e) {
 			throw e;
 		}
 
-		List<Blog> blogs = blogService.getBlogByCreator(userId);
+		List<BlogCreatorDTO> blogs = blogService.getBlogByCreator(userId);
+		return blogs;
+	}
+
+	@GetMapping("/category/{catId}/blogs")
+	public List<BlogCreatorDTO> getAllBlogsByCategory(@PathVariable(value = "catId") int catId) {
+		try {
+			categoryService.getCategoryById(catId);
+		} catch (Error e) {
+			throw e;
+		}
+
+		List<BlogCreatorDTO> blogs = blogService.getBlogByCategory(catId);
 		return blogs;
 	}
 

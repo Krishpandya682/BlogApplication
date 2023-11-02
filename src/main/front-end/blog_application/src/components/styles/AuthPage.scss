@@ -1,19 +1,32 @@
-.Auth-form-container{
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+@import "./variables";
 
+
+.error_group{
+    @include error();
+}
+.Auth-form-container {
+    @include flexCenter(100, 2rem);
 }
 
-.Auth-form{
+.Auth-form {
+    @include flexCenter(50, 2rem);
     border: 1px solid black;
     padding: 4rem;
     border-radius: 2rem;
-    width: 50%;
 }
 
-.Auth-form-title{
+.Auth-form-content {
+    width: 100%;
+
+    .button_group {
+        @include flexCenter(100, 1rem);
+        button {
+            // width: 50%;
+        }
+    }
+}
+
+.Auth-form-title {
     display: flex;
     justify-content: center;
     padding-bottom: 2rem;

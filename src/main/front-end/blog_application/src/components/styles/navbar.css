@@ -1,0 +1,36 @@
+:root {
+  /* Font size variables */
+  --small: 12px;
+  --medium: 16px;
+  --large: 24px;
+}
+
+.myNav {
+  height: 70px;
+  background-color: #121212;
+  color: #ffd8d6;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem !important;
+  width: 100%;
+}
+
+.navbar_profile_pic {
+  display: flex;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  margin: 0 10px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.myButton {
+  background-color: #63051e !important;
+  border: #ffd8d6 !important;
+  color: #ffd8d6 !important;
+}
+
+body {
+  margin-top: 70px;
+}/*# sourceMappingURL=navbar.css.map */

@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -20,7 +21,7 @@ public class Blog {
 
     @Id
     @SequenceGenerator(
-            name = "blgo_sequence",
+            name = "blog_sequence",
             sequenceName = "blog_sequence",
             allocationSize = 1
     )
@@ -39,19 +40,19 @@ public class Blog {
     private User creator;
 
 
-    public List<Category> getCategories() {
+    public Set<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(Set<Category> categories) {
         this.categories = categories;
     }
 
-    public List<Comment> getCommentList() {
+    public Set<Comment> getCommentList() {
         return commentList;
     }
 
-    public void setCommentList(List<Comment> commentList) {
+    public void setCommentList(Set<Comment> commentList) {
         this.commentList = commentList;
     }
 
@@ -62,13 +63,14 @@ public class Blog {
     },inverseJoinColumns = {
             @JoinColumn(name = "category_id", referencedColumnName = "id")
     })
-    private List<Category> categories;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Category> categories;
     private String url;
     @CreationTimestamp
     private LocalDateTime created;
 
     @OneToMany
-    private List<Comment> commentList;
+    private Set<Comment> commentList;
     private String title;
     @Column(columnDefinition="TEXT")
     private String content;
@@ -79,7 +81,7 @@ public class Blog {
     }
 
     // Constructor to create a new blog post with a title and content
-    public Blog(int id, User creator, List<Category> categories, String title, String content, String url) {
+    public Blog(int id, User creator, Set<Category> categories, String title, String content, String url) {
         this.id = id;
         this.creator = creator;
         this.categories = categories;
@@ -155,6 +157,7 @@ public class Blog {
                 "title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", creator=" + creator +
+                ", categories=" + categories +
                 '}';
     }
 }

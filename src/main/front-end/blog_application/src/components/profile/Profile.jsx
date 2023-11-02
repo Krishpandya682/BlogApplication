@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../context/AuthContext";
 import ReactLoading from "react-loading";
-import "./styles/Profile.scss";
-import MyNavbar from "./Navbar";
-import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import api from "../api/axiosConfig";
+import { Link, useParams } from "react-router-dom";
+import api from "../../api/axiosConfig";
+import { useAuth } from "../../context/AuthContext";
+import MyNavbar from "../Navbar";
+import "../styles/Profile.scss";
+import Blogs from "../blogsList/Blogs";
+import Button from "react-bootstrap/esm/Button";
 
 export const Home = () => {
   const { currUser, currDbUser } = useAuth();
@@ -15,10 +16,10 @@ export const Home = () => {
 
   const getUser = async () => {
     try {
-      console.log("API");
-      const response = await api.get("api/v1/user/" +id);
+      // console.log("API");
+      const response = await api.get("api/v1/user/" + id);
       setUser(response.data);
-      console.log("Api call:- ", response.data);
+      // console.log("Api call:- ", response.data);
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -27,7 +28,7 @@ export const Home = () => {
   useEffect(() => {
     console.log("Id is", id);
     if (!id || id == currDbUser.id) {
-      setUser(currDbUser)
+      setUser(currDbUser);
       setLoading(false);
     } else {
       getUser(id);
@@ -55,7 +56,7 @@ export const Home = () => {
             alt="User Profile Picture"
           />
         </div>
-        <div className="userInfo">
+        <div className="user_info">
           <div className="user_name">
             <p>{user.name}</p>
           </div>
@@ -71,6 +72,12 @@ export const Home = () => {
             </Link>
           </div>
         </div>
+      </div>
+      <div className="user_posts">
+        {!id && <div className="create_blog_btn">
+          <Button href="/createBlog">Create Blog</Button>
+        </div>}
+        <Blogs userId={id ? id : currDbUser.id} />
       </div>
     </div>
   );
