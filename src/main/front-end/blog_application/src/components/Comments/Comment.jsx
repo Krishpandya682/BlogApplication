@@ -85,14 +85,16 @@ const Comment = ({ comment }) => {
     <div className="comment">
       <div className="user_section">
         <div className="left">
-          <div className="top">
-            <img
-              className="user-profile-pic"
-              src={comment.user_profile_pic}
-              alt="User Profile Picture"
-            />
-            <div className="commentor_name">{comment.commentor_name}</div>
-          </div>
+          <a href={"/Profile/" + comment.user_id}>
+            <div className="top">
+              <img
+                className="user-profile-pic"
+                src={comment.user_profile_pic}
+                alt="User Profile Picture"
+              />
+              <div className="commentor_name">{comment.commentor_name}</div>
+            </div>
+          </a>
           <div className="last_updated">
             <footer>{lastUpdated(comment.updated)}</footer>
           </div>

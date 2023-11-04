@@ -3,6 +3,8 @@ import Card from "react-bootstrap/Card";
 import { lastUpdated } from "../helperFunctions";
 import "../styles/blogCard.css";
 
+const placeholder_img =
+  "https://firebasestorage.googleapis.com/v0/b/blogapplication-c76e2.appspot.com/o/images%2Fblog_images%2Fblack-contour-f41038db.svg?alt=media&token=05ad6dd7-2535-43ab-8bdf-96c2ede306aa&_gl=1*rxzluh*_ga*MTA4OTUzOTMwMi4xNjk3OTUwMjQw*_ga_CW55HF8NVT*MTY5OTA5MTEzNy4yOC4xLjE2OTkwOTI1ODEuNTMuMC4w";
 export default function BlogCard({ blog, index }) {
   let url = "/blog/" + blog.blog_id;
   useEffect(() => {
@@ -17,11 +19,7 @@ export default function BlogCard({ blog, index }) {
           <div>
             <div className="image_container">
               <Card.Img
-                src={
-                  blog.img_url != null
-                    ? blog.img_url
-                    : "https://placehold.co/600x400"
-                }
+                src={blog.img_url != null ? blog.img_url : placeholder_img}
                 alt="Card image"
               />
             </div>

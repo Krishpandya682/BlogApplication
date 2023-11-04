@@ -15,4 +15,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findAllByBlogIdOrderByCreatedDesc(int blogId);
 
     int countByReplyTo(int replyTo);
+
+    void deleteByReplyTo(int id);
 }

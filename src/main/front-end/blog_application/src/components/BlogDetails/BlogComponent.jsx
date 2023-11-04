@@ -18,6 +18,8 @@ import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import "react-quill/dist/quill.core.css";
 import DOMPurify from "dompurify";
+import { deleteObject, ref } from "firebase/storage";
+import { storage } from "../../firebase";
 
 const BlogComponent = ({ id }) => {
   const navigate = useNavigate();
@@ -28,9 +30,9 @@ const BlogComponent = ({ id }) => {
     useContext(EditBlogContext);
   const { currDbUser } = useAuth();
   const [loadingMessage, setLoadingMessage] = useState("Loading...");
-  
+
   async function getBlog(id) {
-    setLoadingMessage("Getting Blog...")
+    setLoadingMessage("Getting Blog...");
     console.log("Id:=", id);
     api
       .get("/api/v1/blog/" + id + "/BlogCreatorInfo")
@@ -62,8 +64,12 @@ const BlogComponent = ({ id }) => {
     BlogComments.getBlogComments();
   };
 
-  function deleteBlog() {
-
+  async function deleteBlog() {
+    if (blog.img_url) {
+      const oldRef = ref(storage, blog.img_url);
+      console.log("Old Image ref:-", oldRef);
+      await deleteObject(oldRef);
+    }
     api.delete("/api/v1/blog/" + id).then(() => {
       navigate("/");
     });
@@ -138,16 +144,16 @@ const BlogComponent = ({ id }) => {
         <div className="title-section">
           <h1 className="blog-title">{blog.blog_title}</h1>
         </div>
-        <div className="creator-section">
-          <img
-            className="user-profile-pic"
-            src={blog.user_profile_pic}
-            alt="User Profile Picture"
-          />
-          <p className="creator-name">
-            Written by: <a href={profileURL}>{blog.creator_name}</a>
-          </p>
-        </div>
+        <a className = "myLink" href={profileURL}>
+          <div className="creator-section">
+            <img
+              className="user-profile-pic"
+              src={blog.user_profile_pic}
+              alt="User Profile Picture"
+            />
+            <p className="creator-name">Written by: {blog.creator_name}</p>
+          </div>
+        </a>
         <div className="content">
           {blog.img_url && (
             <div className="content-image">

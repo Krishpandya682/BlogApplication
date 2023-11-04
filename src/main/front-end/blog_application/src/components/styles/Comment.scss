@@ -61,26 +61,33 @@
         .left {
             display: flex;
             flex-direction: column;
-            
-            .top {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                .user-profile-pic{
-                    @include circle_profile_pic();
-                    height: 2rem!important;
-                    width: 2rem!important;
-                }
 
-                .commentor_name {
-                    font-weight: bolder;
-                    font-size: 1rem;
+            a {
+                color: inherit;
+                text-decoration: inherit;
+
+                .top {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+
+                    .user-profile-pic {
+                        @include circle_profile_pic();
+                        height: 2rem !important;
+                        width: 2rem !important;
+                    }
+
+                    .commentor_name {
+                        font-weight: bolder;
+                        font-size: 1rem;
+                    }
+
                 }
-            
             }
-            .last_updated{
-                margin-left: 3.25rem!important;
-                font-size: 0.75rem!important;
+
+            .last_updated {
+                margin-left: 3.25rem !important;
+                font-size: 0.75rem !important;
                 // font-weight: lighter!important;
             }
         }
@@ -101,7 +108,8 @@
     .card_links {
         display: flex;
         justify-content: end;
-        button{
+
+        button {
             @include myButton();
         }
 

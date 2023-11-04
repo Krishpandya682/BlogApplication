@@ -4,6 +4,7 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage";
+import { AiOutlineClose } from "react-icons/ai";
 import EditorToolbar, {
   modules,
   formats,
@@ -30,11 +31,11 @@ export function EditBlog({ blog }) {
   const { currDbUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("Loading...");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState(blog.title);
+  const [content, setContent] = useState(blog.content);
   const [categories, setCategories] = useState();
   const [selectCategories, setSelectCategories] = useState([]);
-  const [imgUpload, setImgUpload] = useState(null);
+  const [imgUpload, setImgUpload] = useState({ name: "No Change In Image" });
   const [selectedOptions, setSelectedOptions] = useState();
 
   const [error, setError] = useState();
@@ -45,13 +46,27 @@ export function EditBlog({ blog }) {
   const handleEditBlog = async (e) => {
     e.preventDefault();
     let data = {};
+    if (title === "") {
+      setError("Title Can not be empty!");
+      return;
+    }
     if (title && title != "" && title != blog.title) {
       data.title = title;
+    }
+    if (content === "") {
+      setError("Blog Can not be empty!");
+      return;
     }
     if (content && content != "" && content != blog.content) {
       data.content = content;
     }
-    if (imgUpload != null) {
+    if (imgUpload != null && imgUpload.name != "No Change In Image") {
+      if (blog.img_url) {
+        const oldRef = ref(storage, blog.img_url);
+        console.log("Old Image ref:-", oldRef);
+        await deleteObject(oldRef);
+      }
+
       console.log("Image is not null", imgUpload);
       const fileName = "blog_images/" + imgUpload.name + v4();
       imageRef = ref(storage, "images/" + fileName);
@@ -74,8 +89,6 @@ export function EditBlog({ blog }) {
       setLoading(false);
       console.log(response.data);
       if (response.status === 200) {
-
-
         const blogCategories = {
           blogId: blog.blog_id,
           categories: [],
@@ -186,7 +199,9 @@ export function EditBlog({ blog }) {
       </div>
       <div className="blog_creation_form">
         <h2>Edit the Blog</h2>
+
         <form onSubmit={handleEditBlog}>
+          {error && <div className="error_group">{error}</div>}
           <div className="form-group">
             <label>Title</label>
             <input
@@ -198,7 +213,7 @@ export function EditBlog({ blog }) {
           </div>
           <div className="form-group">
             <label>Categories</label>
-            <div className="input">
+            <div className="input w-100">
               <CreatableSelect
                 closeMenuOnSelect={false}
                 components={animatedComponents}
@@ -227,16 +242,44 @@ export function EditBlog({ blog }) {
           </div>
           <div className="form-group mt-3">
             <label>Blog Image</label>
-            <input
-              type="file"
-              className="form-control mt-1"
-              onChange={(e) => {
-                setImgUpload(e.target.files[0]);
-              }}
-            />
+            <div className="d-flex align-items-center w-100">
+              <input
+                type="file"
+                className="form-control mt-1 mr-2"
+                accept="image/png, image/gif, image/jpeg"
+                onChange={(e) => {
+                  console.log("Change!");
+                  if (e.target.files[0]) {
+                    setImgUpload(e.target.files[0]);
+                  }
+                  removeError();
+
+                  if (e.target.files[0] && e.target.files[0].size > 2097152) {
+                    console.log("Too large!");
+                    setError("File is too big (Maximum image size: 2MB)!");
+                    setImgUpload();
+                    return;
+                  }
+                }}
+              />
+              <AiOutlineClose
+                size={"2rem"}
+                onClick={() => {
+                  setImgUpload();
+                }}
+              ></AiOutlineClose>
+            </div>
+            <label>
+              Selected: {imgUpload && imgUpload != null && imgUpload.name}
+            </label>
           </div>
+
           <div className="form-group form_group_footer mt-3">
-            <button type="submit" className="btn btn-primary myButton">
+            <button
+              type="submit"
+              className="btn btn-primary myButton"
+              disabled={error}
+            >
               Update Blog
             </button>
           </div>

@@ -23,7 +23,7 @@ export default function (props) {
   let [fullName, setFullName] = useState();
   const [error, setError] = useState();
   let [bio, setBio] = useState();
-  const { signUp, setSigningUp } = useAuth();
+  const { signUp, setSigningUp, setProfileUpd, profileUpd } = useAuth();
   const [imgUpload, setImgUpload] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Loading...");
@@ -73,6 +73,7 @@ export default function (props) {
                   .then((response) => {
                     if (response.status === 200) {
                       setSigningUp(false);
+                      setProfileUpd(!profileUpd);
                       navigate("/");
                       setLoading(false);
                     } else {
@@ -218,9 +219,6 @@ export default function (props) {
             <div className="text-center">
               Already registered? <Link to="/signIn">Sign In</Link>
             </div>
-            {/* <p className="text-center mt-2">
-              Forgot <a href="#">password?</a>
-            </p> */}
           </div>
         </form>
       </div>

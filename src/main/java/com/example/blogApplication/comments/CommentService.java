@@ -57,6 +57,11 @@ public class CommentService {
     }
 
     public void deleteComment(int id) {
+        List<CommentCommentorDTO> replies =  this.getCommentsWithUsersReplies(id);
+        for (CommentCommentorDTO reply: replies
+             ) {
+            deleteComment(reply.getComment_id());
+        }
         commentRepository.deleteById(id);
     }
 

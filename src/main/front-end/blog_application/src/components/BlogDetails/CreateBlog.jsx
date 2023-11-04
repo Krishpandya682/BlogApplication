@@ -7,6 +7,7 @@ import {
 import React, { useEffect, useState } from "react";
 import ReactLoading from "react-loading";
 import ReactQuill from "react-quill";
+import { AiOutlineClose } from "react-icons/ai";
 import EditorToolbar, {
   modules,
   formats,
@@ -33,7 +34,7 @@ export function CreateBlog() {
   const [content, setContent] = useState("");
   const [categories, setCategories] = useState();
   const [selectCategories, setSelectCategories] = useState([]);
-  const [imgUpload, setImgUpload] = useState(null);
+  const [imgUpload, setImgUpload] = useState();
   const [selectedOptions, setSelectedOptions] = useState();
 
   const [error, setError] = useState();
@@ -113,6 +114,7 @@ export function CreateBlog() {
   };
 
   const handleCreate = (inputValue) => {
+    console.log("Image upload:", imgUpload.name);
     console.log("Handling create!", selectedOptions);
     setLoading(true);
 
@@ -123,6 +125,7 @@ export function CreateBlog() {
       const newOption = { value: response.data, label: inputValue };
       setLoading(false);
       setSelectCategories((prev) => [...prev, newOption]);
+
       setSelectedOptions((prev) => {
         if (prev && prev.length > 0) {
           return [...prev, newOption];
@@ -229,16 +232,36 @@ export function CreateBlog() {
             </div>
             <div className="form-group mt-5">
               <label>Add Blog Image</label>
-              <div className="input">
+              <div className="input d-flex align-items-center">
                 <input
                   type="file"
-                  className="form-control mt-1"
+                  className="form-control mt-1 mr-2"
+                  accept="image/png, image/gif, image/jpeg"
                   onChange={(e) => {
-                    setImgUpload(e.target.files[0]);
+                    if (e.target.files[0]) {
+                      setImgUpload(e.target.files[0]);
+                    }
+
                     removeError();
+                    console.log();
+                    if (e.target.files[0] && e.target.files[0].size > 2097152) {
+                      setError("File is too big (Maximum image size: 2MB)!");
+                      setImgUpload();
+                      return;
+                    }
                   }}
                 />
+
+                <AiOutlineClose
+                  size={"2rem"}
+                  onClick={() => {
+                    setImgUpload();
+                  }}
+                ></AiOutlineClose>
               </div>
+              <label>
+                Selected: {imgUpload && imgUpload != null && imgUpload.name}
+              </label>
             </div>
             <div className="button_group">
               <button type="submit" className="btn btn-primary">

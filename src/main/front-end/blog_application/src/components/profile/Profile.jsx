@@ -80,9 +80,11 @@ export const Home = () => {
             <p>{user.email}</p>
           </div>
           <div className="editButton">
-            <button class = "myButton" underline="hover" to="/EditProfile">
-              Edit Profile
-            </button>
+            { (!id || id == currDbUser.id) &&
+              <Button className="myButton" href="/EditProfile">
+                Edit Profile
+              </Button>
+            }
           </div>
         </div>
       </div>

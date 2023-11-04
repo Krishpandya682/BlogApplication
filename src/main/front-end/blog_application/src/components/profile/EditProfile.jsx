@@ -37,7 +37,7 @@ export default function (props) {
     let imageRef = null;
     let data = {};
 
-    if (fullName.length === 0) {
+    if (fullName && fullName.length === 0) {
       setError("Full Name can't be empty!");
       setLoading(false);
       return;
@@ -58,7 +58,7 @@ export default function (props) {
       console.log("Image changed");
       const oldImageRef = ref(storage, currDbUser.profile_pic);
 
-      const fileName = imgUpload.name + v4();
+      const fileName = "profile_pic/" + imgUpload.name + v4();
       imageRef = ref(storage, "images/" + fileName);
 
       await uploadBytes(imageRef, imgUpload);

@@ -1,4 +1,5 @@
 @import './variables';
+
 .blog-page {
     background-color: #f0f0f0;
     padding-left: 8rem;
@@ -25,29 +26,28 @@
         }
     }
 
-    .creator-section {
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .myLink {
+        color: inherit !important;
+        text-decoration: none !important;
 
-        .user-profile-pic {
-            @include circle_profile_pic();
-        }
+        .creator-section {
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-        .creator-name {
-            color: #666;
-            margin: 0;
+            .user-profile-pic {
+                @include circle_profile_pic();
+            }
 
-            a {
-                color: inherit;
-                text-decoration: none;
-
-                &:hover {
-                    text-decoration: underline;
-                }
+            .creator-name {
+                color: #666;
+                margin: 0;
             }
         }
+        // &:hover {
+        //     text-decoration: underline;
+        // }
     }
 
     .content {
@@ -80,6 +80,7 @@
             background-color: white;
             padding: 1rem;
             border-radius: 10px;
+
             .ql-snow {
                 .ql-editor {
                     &.ql-editor {
