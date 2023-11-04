@@ -1,31 +1,126 @@
-.comments_component{
-    padding-left: 1.5rem;
-    padding-right: 6rem;
-}
-
-.blog-page{
-    padding: 3rem;
-}
-
-.content_image{
-    max-width: 40%;
-}
-
-.blog-image{
-    max-width: 80%;
-}
-
-.edit_button{
+@import './variables';
+.blog-page {
+    background-color: #f0f0f0;
+    padding-left: 8rem;
+    padding-right: 8rem;
+    border-radius: 8px;
+    border: solid black 1px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
     display: flex;
-    justify-content: end;
-    align-items: end;
-}
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 3rem;
 
-.editComponent{
-    padding-left: 5rem;
-    padding-right: 5rem;
-}
+    .title-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-.post_comment_component{
-    width: 100%;
+        .blog-title {
+            font-weight: bolder;
+            max-width: 70%;
+            font-size: 4rem;
+            color: #333;
+        }
+    }
+
+    .creator-section {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .user-profile-pic {
+            @include circle_profile_pic();
+        }
+
+        .creator-name {
+            color: #666;
+            margin: 0;
+
+            a {
+                color: inherit;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    .content {
+        padding: 1rem;
+
+        .content-image {
+            max-width: 100%;
+
+            .blog-image {
+                max-width: 80%;
+            }
+        }
+
+        .blog_categories_section {
+            .categories_list {
+                @include categoriesList();
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+
+                .category_tag {
+                    @include categoryTag();
+                    margin-bottom: 1.5rem;
+                }
+            }
+        }
+
+        .content_text {
+
+            background-color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            .ql-snow {
+                .ql-editor {
+                    &.ql-editor {
+
+                        /* Your styles here */
+                    }
+                }
+            }
+        }
+    }
+
+    .edit_button {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+    }
+
+    .editComponent {
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+
+    .post_comment_component {
+        width: 100%;
+    }
+
+    .last-updated {
+        font-size: 1.25rem;
+        color: #999;
+    }
+
+    hr {
+        margin: 2rem 0;
+        border: 0;
+        border-top: 1px solid #ddd;
+    }
+
+    .comments_component {
+        .comment_section {
+            padding-left: 1.5rem;
+            padding-right: 6rem;
+        }
+    }
 }

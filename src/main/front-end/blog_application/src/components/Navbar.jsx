@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./styles/navbar.css";
 
-function MyNavbar() {
+function MyNavbar({signingUp}) {
   const [authText, setAuthText] = useState("SignOut");
   const { setProfileUpd, profileUpd, currUser, signOutHandler, currDbUser } =
     useAuth();
@@ -22,12 +22,16 @@ function MyNavbar() {
   }
 
   useEffect(() => {
+    console.log("Checking Navbar!!!");
     if (currUser) {
       setAuthText("Sign Out");
     } else {
       setAuthText("Sign In");
+      if(!signingUp){
+      navigate("/signIn");
+      }
     }
-  }, [currUser]);
+  }, [currUser, profileUpd, currDbUser]);
 
   return (
     <Navbar
@@ -45,7 +49,7 @@ function MyNavbar() {
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
-          { currDbUser &&
+          { (currUser && currDbUser)  &&
             <a href="/Profile">
               <img
                 className="navbar_profile_pic"

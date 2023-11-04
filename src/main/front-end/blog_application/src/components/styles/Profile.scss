@@ -40,7 +40,7 @@
     display: flex;
 
     @include xs {
-        
+
         flex-direction: column;
     }
 
@@ -63,13 +63,18 @@
 
 .edit_button {
     display: flex;
+
+    .myButton {
+        @include myButton();
+        border-radius: 3px!important    ;
+    }
 }
 
 .user_info {
     padding: 2rem;
 }
 
-.create_blog_btn{
+.create_blog_btn {
     display: flex;
     justify-content: end;
     align-items: flex-end;

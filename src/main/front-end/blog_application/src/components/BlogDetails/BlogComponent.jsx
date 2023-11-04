@@ -3,6 +3,7 @@ import { AiOutlineClose, AiOutlineDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
 import ReactLoading from "react-loading";
 import { useNavigate } from "react-router-dom";
+import "react-quill/dist/quill.snow.css";
 import api from "../../api/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
 import { CommentContextProvider } from "../../context/CommentContext";
@@ -15,7 +16,7 @@ import { lastUpdated } from "../helperFunctions";
 import "../styles/BlogComponent.css";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
-
+import "react-quill/dist/quill.core.css";
 import DOMPurify from "dompurify";
 
 const BlogComponent = ({ id }) => {
@@ -26,7 +27,10 @@ const BlogComponent = ({ id }) => {
   const { editing, setEditing, blogUpd, setBlogUpd } =
     useContext(EditBlogContext);
   const { currDbUser } = useAuth();
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
+  
   async function getBlog(id) {
+    setLoadingMessage("Getting Blog...")
     console.log("Id:=", id);
     api
       .get("/api/v1/blog/" + id + "/BlogCreatorInfo")
@@ -59,6 +63,7 @@ const BlogComponent = ({ id }) => {
   };
 
   function deleteBlog() {
+
     api.delete("/api/v1/blog/" + id).then(() => {
       navigate("/");
     });
@@ -91,7 +96,15 @@ const BlogComponent = ({ id }) => {
   if (loading) {
     return (
       <div className="loading">
-        <ReactLoading type={"balls"} color={"blue"} height={50} width={100} />
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
       </div>
     );
   }
@@ -141,25 +154,30 @@ const BlogComponent = ({ id }) => {
               <img className="blog-image" src={blog.img_url} alt="Blog Image" />
             </div>
           )}
-          <div className="tags">
-            Tags:-
-            {blog.categories.map((category) => {
-              console.log("Category is:-", category);
-              return (
-                <a id="category" href={"/blogs/" + category.id}>
-                  {category.categoryName}
-                </a>
-              );
-            })}
+
+          <div className="blog_categories_section">
+            <div className="categories_list">
+              {blog.categories.map((cat) => {
+                return (
+                  <div className="category_tag">
+                    <a href={"/blogs/" + cat.id}>{cat.categoryName}</a>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div className="content_text">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(blog.content),
-              }}
-            />
+            <div className="ql-snow">
+              <div
+                className="ql-editor"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(blog.content),
+                }}
+              />
+            </div>
           </div>
         </div>
+
         <p className="last-updated">
           Last Updated: {lastUpdated(blog.updated)}
         </p>
@@ -167,7 +185,6 @@ const BlogComponent = ({ id }) => {
       <hr></hr>
       <CommentContextProvider>
         <div className="px-5">
-          {" "}
           <div className="post_comment_component">
             <PostComment
               blog_id={id}

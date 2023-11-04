@@ -1,5 +1,12 @@
+:root {
+  /* Font size variables */
+  --small: 12px;
+  --medium: 16px;
+  --large: 24px;
+}
+
 .post_comment {
-  padding-top: 1rem;
+  width: 100%;
   padding-left: 3rem;
   padding-right: 3rem;
   display: flex;
@@ -7,21 +14,26 @@
   align-items: flex-start;
   justify-content: flex-start;
 }
-
-form {
+.post_comment form {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
-
-.form-group_button {
+.post_comment form .form-group_button {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   align-items: flex-end;
   padding: 0.25rem;
 }
-
-textarea {
-  padding: 20px;
+.post_comment form button {
+  padding: 0.5rem;
+  background-color: #63051e !important;
+  border: #ffd8d6 !important;
+  color: #ffd8d6 !important;
+  transition: all 300ms ease-in-out;
+}
+.post_comment form button:hover {
+  background-color: #a82749 !important;
+  color: #121212 !important;
 }/*# sourceMappingURL=PostComment.css.map */

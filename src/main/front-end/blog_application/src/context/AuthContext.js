@@ -15,8 +15,13 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-const signUp = (email, password) => {
-  return createUserWithEmailAndPassword(auth, email, password);
+const signUp = async (email, password) => {
+  try{
+  return await createUserWithEmailAndPassword(auth, email, password);
+  }
+  catch(error){
+    throw error;
+  }
 };
 const signIn = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password);
@@ -53,20 +58,31 @@ export function AuthProvider({ children }) {
       return;
     }
     setCurrUser(user);
-    getDbUser(user.uid)
-      .then(() => {
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.log("Error in getting the Database User");
-        console.log(e);
-        if (!signingUp) {
+
+    console.log("SETTING UP CURRENT USER FROM AUTH CONTEXT");
+
+    if (!signingUp) {
+      console.log("Not Signing Up")
+      getDbUser(user.uid)
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((e) => {
+          console.log("Error in getting the Database User");
+          console.log(e);
+
           navigate("/signin");
-        }
-        setLoading(false);
-      });
+
+          setLoading(false);
+        });
+    }else{
+      setLoading(false);
+    }
   }
   useEffect(() => {
+
+    console.log("AUTH CONTEXT USE EFFECT!!");
+
     setLoading(true);
     const unsubscribe = auth.onAuthStateChanged((user) => {
       console.log("firbase auth change User is", user);

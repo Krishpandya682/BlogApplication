@@ -12,8 +12,13 @@ export function PostComment({ blog_id, /*refreshComments,*/ reply_to }) {
   const navigate = useNavigate();
   const { currDbUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
   const [content, setContent] = useState("");
+  const [error, setError] = useState();
 
+  function removeError(e) {
+    setError();
+  }
   const handlePostComment = async (e) => {
     e.preventDefault();
     console.log("Replying to :- ", reply_to);
@@ -25,11 +30,11 @@ export function PostComment({ blog_id, /*refreshComments,*/ reply_to }) {
     };
 
     if (!content) {
-      alert("Can't make an empty.");
+      setError("Can't make an empty comment.");
       return;
     }
     setLoading(true);
-    const response = await api
+    await api
       .post("/api/v1/comment/blog/" + blog_id + "/user/" + currDbUser.id, data)
       .then((response) => {
         console.log("Comment posted with ID=" + response.data);
@@ -51,34 +56,44 @@ export function PostComment({ blog_id, /*refreshComments,*/ reply_to }) {
         console.error(error);
       });
   };
-
   if (loading) {
     return (
-      <ReactLoading type={"balls"} color={"blue"} height={667} width={375} />
+      <div className="post_comment mb-5">
+        <div className="loading">
+          <div className="loading_bar">
+            <ReactLoading
+              type={"balls"}
+              color={"#63051e"}
+              height={50}
+              width={100}
+            />
+          </div>
+          <div className="loading_message">{loadingMessage}</div>
+        </div>
+      </div>
     );
   }
   return (
-    <div>
-      <div className="post_comment">
-        <h2>Comments</h2>
-        <form onSubmit={handlePostComment}>
-          <div className="form-group">
-            <textarea
-              className="form-control"
-              rows="3"
-              placeholder="Write your comment"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </div>
-          <div className="form-group_button">
-            {" "}
-            <button type="submit" className="btn btn-primary">
-              Post Comment
-            </button>
-          </div>
-        </form>
-      </div>
+    <div className="post_comment mb-5">
+      <form onSubmit={handlePostComment}>
+        <div className="form-group d-flex flex-row">
+          <textarea
+            className="form-control w-75 mx-2"
+            rows="1"
+            placeholder="Write your comment"
+            value={content}
+            onChange={(e) => {
+              setContent(e.target.value);
+              removeError();
+            }}
+          />
+          <button type="submit" className="btn btn-primary w-25 ml-2">
+            Post Comment
+          </button>
+        </div>
+
+        {error && <div className="error_group w-70">{error}</div>}
+      </form>
     </div>
   );
 }

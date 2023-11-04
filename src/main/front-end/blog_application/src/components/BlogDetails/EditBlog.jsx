@@ -4,6 +4,10 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage";
+import EditorToolbar, {
+  modules,
+  formats,
+} from "../QuillRichTextEditor/Toolbar";
 import React, { useContext, useState, useEffect } from "react";
 import ReactLoading from "react-loading";
 import ReactQuill from "react-quill";
@@ -25,6 +29,7 @@ export function EditBlog({ blog }) {
   const navigate = useNavigate();
   const { currDbUser } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categories, setCategories] = useState();
@@ -54,6 +59,7 @@ export function EditBlog({ blog }) {
       console.log("ref is ", imageRef);
 
       setLoading(true);
+      setLoadingMessage("Uploading Image...");
       await uploadBytes(imageRef, imgUpload);
 
       console.log("Upload promise returned");
@@ -63,11 +69,12 @@ export function EditBlog({ blog }) {
     }
     console.log("Trying to write data: ", data, blog);
     try {
+      setLoadingMessage("Updating Blog...");
       const response = await api.put(`/api/v1/blog/${blog.blog_id}`, data);
       setLoading(false);
       console.log(response.data);
       if (response.status === 200) {
-        alert("Blog Updated successfully!");
+
 
         const blogCategories = {
           blogId: blog.blog_id,
@@ -78,22 +85,19 @@ export function EditBlog({ blog }) {
         });
 
         try {
+          setLoadingMessage("Uploading Categories...");
           const addCatsResponse = await api.post(
             "api/v1/category/AddBlogCategories",
             blogCategories
           );
           console.log("Categories added!");
           setLoading(false);
-          alert("Blog created successfully!");
         } catch (error) {
           setLoading(false);
           deleteObject(imageRef).then(() => {});
           console.error(error);
         }
         navigate("/blog/" + blog.blog_id);
-        
-
-
 
         setEditing(false);
         setBlogUpd(blogUpd + 1);
@@ -162,7 +166,17 @@ export function EditBlog({ blog }) {
 
   if (loading) {
     return (
-      <ReactLoading type={"balls"} color={"blue"} height={667} width={375} />
+      <div className="loading">
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#ffd8d6"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
+      </div>
     );
   }
   return (
@@ -201,11 +215,18 @@ export function EditBlog({ blog }) {
           </div>
           <div className="form-group">
             <label>Content</label>
-
-            <ReactQuill defaultValue={blog.content} onChange={setContent} />
+            <EditorToolbar />
+            <ReactQuill
+              theme="snow"
+              defaultValue={blog.content}
+              onChange={setContent}
+              onFocus={removeError}
+              modules={modules}
+              formats={formats}
+            />
           </div>
           <div className="form-group mt-3">
-            <label>Profile Pic</label>
+            <label>Blog Image</label>
             <input
               type="file"
               className="form-control mt-1"
@@ -215,7 +236,7 @@ export function EditBlog({ blog }) {
             />
           </div>
           <div className="form-group form_group_footer mt-3">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary myButton">
               Update Blog
             </button>
           </div>

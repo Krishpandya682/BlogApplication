@@ -13,6 +13,7 @@ export const CommentReplies = ({ comment_id }) => {
   const { currUser, currDbUser } = useAuth();
   const [comments, setComments] = useState();
   const [replyLoading, setReplyLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
 
   const getBlogComments = async () => {
     console.log("Replies API CALL!!!!!");
@@ -38,22 +39,25 @@ export const CommentReplies = ({ comment_id }) => {
   if (replyLoading) {
     return (
       <div className="loading">
-        <ReactLoading type={"balls"} color={"blue"} height={50} width={100} />
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
       </div>
     );
   }
   return (
-    <div>
-      <div>
-        <MyNavbar />
-      </div>
-      <div className="flex d-flex flex-column p-3 w-100">
-        {comments.map((comment) => (
-          <div className="reply">
+    <div className="flex d-flex flex-column p-3 w-100">
+      {comments.map((comment) => (
+        <div className="reply">
           <Comment comment={comment}></Comment>
-          </div>
-        ))}
-      </div> 
+        </div>
+      ))}
     </div>
   );
 };

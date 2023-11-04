@@ -5,6 +5,7 @@ import api from "../../api/axiosConfig";
 import CommentReplies from "./CommentReplies";
 import PostComment from "./PostComment";
 import { lastUpdated } from "../helperFunctions";
+import { AiOutlineDelete } from "react-icons/ai";
 import "../styles/Comment.scss";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
@@ -12,7 +13,7 @@ import { useAuth } from "../../context/AuthContext";
 import { CommentContext } from "../../context/CommentContext";
 
 const Comment = ({ comment }) => {
-  const { commentUpd , setCommentUpd, setBlogCommentLoading} =
+  const { commentUpd, setCommentUpd, setBlogCommentLoading } =
     useContext(CommentContext);
   const { currDbUser } = useAuth();
   const [showFormButton, setShowFormButton] = useState(true);
@@ -57,8 +58,8 @@ const Comment = ({ comment }) => {
       .delete("api/v1/comment/" + comment.comment_id)
       .then((response) => {
         console.log(response.data);
-        
-        setCommentUpd(commentUpd+1);
+
+        setCommentUpd(commentUpd + 1);
         setBlogCommentLoading(false);
         return;
       })
@@ -81,61 +82,62 @@ const Comment = ({ comment }) => {
   }, []);
 
   return (
-    <Card>
-      <Card.Body>
-        <div>
-          <div className="user_section">
+    <div className="comment">
+      <div className="user_section">
+        <div className="left">
+          <div className="top">
             <img
               className="user-profile-pic"
               src={comment.user_profile_pic}
               alt="User Profile Picture"
             />
             <div className="commentor_name">{comment.commentor_name}</div>
-            {comment.user_id === currDbUser.id && (
-              <div className="pl-5" onClick={handleDeleteButtonClick}>
-                DELETE
-              </div>
-            )}
           </div>
-          <div className="comment_content">
-            <Card.Text className="px-2">
-              <div className="comment_text">{comment.comment}</div>
-            </Card.Text>
-            <div className="last_updated">
-              <footer>{lastUpdated(comment.updated)}</footer>
-            </div>
+          <div className="last_updated">
+            <footer>{lastUpdated(comment.updated)}</footer>
           </div>
-          <div className="card_links">
-            <div className="p-2">
-              {showFormButton && (
-                <Button onClick={replyToComment}>Reply</Button>
-              )}
-            </div>
-
-            <div className="p-2">
-              <Button onClick={showReplies_Click} disabled={repliesNum == 0}>
-                {(showRepliesButton ? "Show Replies " : "Hide Replies") +
-                  "(" +
-                  repliesNum +
-                  ")"}
-              </Button>
-            </div>
-          </div>
-
-          <div className="replies_section">
-            {showReplies && (
-              <CommentReplies comment_id={comment.comment_id}></CommentReplies>
-            )}
-          </div>
-          {showForm && (
-            <PostComment
-              blog_id={comment.blog_id}
-              reply_to={comment.comment_id}
-            ></PostComment>
+        </div>
+        <div className="right">
+          {comment.user_id === currDbUser.id && (
+            <AiOutlineDelete size="2rem" onClick={handleDeleteButtonClick} />
           )}
         </div>
-      </Card.Body>
-    </Card>
+      </div>
+      <div className="comment_content">
+        <div className="comment_text">{comment.comment}</div>
+      </div>
+      <div className="card_links">
+        <div className="p-2">
+          {
+            <Button onClick={replyToComment}>
+              {" "}
+              {showFormButton ? "Reply" : "Cancel"}
+            </Button>
+          }
+        </div>
+
+        <div className="p-2">
+          <Button onClick={showReplies_Click} disabled={repliesNum == 0}>
+            {(showRepliesButton ? "Show Replies " : "Hide Replies") +
+              "(" +
+              repliesNum +
+              ")"}
+          </Button>
+        </div>
+      </div>
+
+      <div className="replies_section">
+        {showForm && (
+          <PostComment
+            blog_id={comment.blog_id}
+            reply_to={comment.comment_id}
+          ></PostComment>
+        )}
+        {showReplies && (
+          <CommentReplies comment_id={comment.comment_id}></CommentReplies>
+        )}
+      </div>
+    </div>
   );
 };
 

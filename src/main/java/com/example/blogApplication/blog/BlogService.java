@@ -71,6 +71,11 @@ public class BlogService {
 	}
 
 	public void deleteBlog(int id) {
+		Blog b = blogRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Blog Does Not Exist"));
+		for (Category c : b.getCategories()
+			 ) {
+			b.removeCategory(c);
+		}
 		blogRepository.deleteById(id);
 	}
 

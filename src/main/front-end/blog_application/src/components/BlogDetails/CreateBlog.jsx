@@ -28,6 +28,7 @@ export function CreateBlog() {
   const navigate = useNavigate();
   const { currDbUser } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [categories, setCategories] = useState();
@@ -54,6 +55,7 @@ export function CreateBlog() {
       console.log("ref is ", imageRef);
 
       setLoading(true);
+      setLoadingMessage("Uploading image...");
       await uploadBytes(imageRef, imgUpload);
 
       console.log("Upload promise returned");
@@ -70,6 +72,7 @@ export function CreateBlog() {
     }
 
     try {
+      setLoadingMessage("Uploading post...");
       const response = await api.post(`/api/v1/blog/${currDbUser.id}`, data);
 
       console.log(response.data);
@@ -84,13 +87,14 @@ export function CreateBlog() {
         });
 
         try {
+          setLoadingMessage("Adding Categories...");
           const addCatsResponse = await api.post(
             "api/v1/category/AddBlogCategories",
             blogCategories
           );
           console.log("Categories added!");
           setLoading(false);
-          alert("Blog created successfully!");
+          // alert("Blog created successfully!");
         } catch (error) {
           setLoading(false);
           deleteObject(imageRef).then(() => {});
@@ -148,7 +152,17 @@ export function CreateBlog() {
 
   if (loading) {
     return (
-      <ReactLoading type={"balls"} color={"blue"} height={667} width={375} />
+      <div className="loading">
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
+      </div>
     );
   }
 
@@ -198,7 +212,7 @@ export function CreateBlog() {
               </div>
             </div>
 
-            <div className="form-group h-20">
+            <div className="form-group h-20 post_content">
               <label>Content</label>
               <div className="input">
                 <EditorToolbar />

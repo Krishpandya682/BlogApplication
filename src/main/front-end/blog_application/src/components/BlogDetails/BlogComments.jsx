@@ -11,6 +11,8 @@ export const BlogComments = ({ blog_id }) => {
     useContext(CommentContext);
   const { currUser, currDbUser } = useAuth();
   const [comments, setComments] = useState();
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
+
 
   const getBlogComments = async () => {
     console.log("API");
@@ -31,10 +33,19 @@ export const BlogComments = ({ blog_id }) => {
     getBlogComments();
   }, [commentUpd]);
 
+
   if (blogCommentLoading) {
     return (
       <div className="loading">
-        <ReactLoading type={"balls"} color={"blue"} height={50} width={100} />
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
       </div>
     );
   }

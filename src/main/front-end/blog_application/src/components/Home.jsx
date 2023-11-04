@@ -5,7 +5,8 @@ import api from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
 import MyNavbar from "./Navbar";
 import Blogs from "./blogsList/Blogs";
-import Button from "react-bootstrap/esm/Button";
+import "./styles/Home.css";
+import "./styles/base.css";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -13,16 +14,19 @@ export const Home = () => {
   const [currDbUser, setCurrDbUser] = useState();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState();
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
+  
 
   const getCurrUser = async () => {
     console.log("Current User from context is", currUser);
-
+    setLoadingMessage("Getting User...");
     console.log("Calling", "/api/v1/user/fbUser/" + currUser.uid);
     api
       .get("/api/v1/user/fbUser/" + currUser.uid)
       .then((response) => {
         console.log("API Response:", response.data);
         setCurrDbUser(response.data);
+        setLoadingMessage("Getting Categories...");
         api.get("/api/v1/category/").then((response) => {
           setCategories(response.data);
           setLoading(false);
@@ -47,28 +51,41 @@ export const Home = () => {
 
   if (loading) {
     return (
-      <ReactLoading type={"balls"} color={"blue"} height={667} width={375} />
+      <div className="loading">
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
+      </div>
     );
   }
+
 
   return (
     <div className="flex d-flex flex-column">
       <MyNavbar />
-      <div className="d-flex flex-column">
-        <div className="create_blog_btn mt-3">
-          <Button href="/createBlog">Create Blog</Button>
-        </div>{" "}
-        <div className="blogs">
-          <Blogs />
+      <div className="mt-3 d-flex flex-column">
+        <div className="categories_section">
+          
+          <div className="categories_list">
+            {categories.map((cat) => {
+              return (
+                <div className="category_tag">
+                  <a href={"/blogs/" + cat.id}>{cat.categoryName}</a>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <div className="categories_list">
-          {categories.map((cat) => {
-            return (
-              <div>
-                <a href={"/blogs/" + cat.id}>{cat.categoryName}</a>
-              </div>
-            );
-          })}
+
+        <div className="blogs">
+          
+          <Blogs />
         </div>
       </div>
     </div>

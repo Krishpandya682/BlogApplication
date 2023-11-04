@@ -1,0 +1,10 @@
+:root {
+  /* Font size variables */
+  --small: 12px;
+  --medium: 16px;
+  --large: 24px;
+}
+
+.content_body {
+  margin-top: 70px;
+}/*# sourceMappingURL=base.css.map */

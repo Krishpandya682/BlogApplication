@@ -16,9 +16,7 @@
 }
 
 .myButton {
-    background-color: $spider-500 !important;
-    border: $spider-300 !important;
-    color: $spider-300 !important;
+    @include myButton;
 }
 
 body{

@@ -5,6 +5,7 @@ import api from "../../api/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
 import BlogCard from "./BlogCard";
 import MyNavbar from "../Navbar";
+import Button from "react-bootstrap/esm/Button";
 import "../styles/BlogList.css";
 
 export const Blogs = ({ userId }) => {
@@ -13,6 +14,7 @@ export const Blogs = ({ userId }) => {
   const [userName, setUserName] = useState();
   const [categoryName, setCategoryName] = useState();
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
   let { catId } = useParams();
 
   const getBlogs = async () => {
@@ -64,6 +66,7 @@ export const Blogs = ({ userId }) => {
   useEffect(() => {
     console.log("User Id= ", userId);
     console.log("Category Id= ", catId);
+    setLoadingMessage("Getting the blogs...");
     if (userId) {
       getUserBlogs();
     } else if (catId) {
@@ -76,27 +79,45 @@ export const Blogs = ({ userId }) => {
   if (loading) {
     return (
       <div className="loading">
-        <ReactLoading type={"balls"} color={"blue"} height={50} width={100} />
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
       </div>
     );
   }
+
   return (
     <div>
       <div>
         <MyNavbar />
       </div>
       <div className="content_container">
-        <div className="title">
-          {!userName && !categoryName && <h2> Recent Blogs</h2>}
-          {userName && <h2>{userName}'s Recent Blogs</h2>}
-          {categoryName && <h2>Recent {categoryName} Blogs</h2>}
+        <div className="d-flex align-items-center justify-content-between">
+          <div className="title">
+            {!userName && !categoryName && <h2> Recent Blogs</h2>}
+            {userName && <h2>{userName}'s Recent Blogs</h2>}
+            {categoryName && <h2>Recent {categoryName} Blogs</h2>}
+          </div>
+          <div className="create_blog_btn">
+            <Button className="myButton" href="/createBlog">
+              Create Blog
+            </Button>
+          </div>
         </div>
         <hr></hr>
-        <div className="flex d-flex flex-column p-3 w-50">
+        <div className="blog_list flex d-flex flex-row p-3 w-80">
           {blogs.length == 0 ? (
             <p>{"No posts yet"}</p>
           ) : (
-            blogs.map((blog) => <BlogCard blog={blog} />)
+            blogs.map((blog, index) => {
+              return <BlogCard blog={blog} index={index} />;
+            })
           )}
         </div>
       </div>

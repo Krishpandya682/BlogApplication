@@ -1,0 +1,22 @@
+@import "./variables";
+
+
+.myButton {
+    @include myButton;
+
+}
+
+.categories_section {
+    padding-left: 1rem;
+    // padding-bottom: 0.5rem;
+    border-bottom: 3px black solid;
+
+    .categories_list {
+        @include categoriesList;
+
+        .category_tag {
+            @include categoryTag;
+        }
+    }
+
+}

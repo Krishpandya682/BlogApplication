@@ -56,7 +56,7 @@ public class Blog {
         this.commentList = commentList;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "blog_category_table",
     joinColumns = {
             @JoinColumn(name = "blog_id", referencedColumnName = "id")
@@ -76,6 +76,10 @@ public class Blog {
     private String content;
     @UpdateTimestamp
     private LocalDateTime updated;
+
+    public boolean removeCategory(Category c){
+        return this.categories.remove(c);
+    }
 
     public Blog() {
     }

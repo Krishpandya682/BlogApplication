@@ -1,5 +1,6 @@
 import React from "react";
 import { Quill } from "react-quill";
+import "../styles/toolbar.css";
 
 // Custom Undo button icon component for Quill editor. You can import it directly
 // from 'quill/assets/icons/undo.svg' but I found that a number of loaders do not
@@ -38,17 +39,17 @@ const Size = Quill.import("formats/size");
 Size.whitelist = ["extra-small", "small", "medium", "large"];
 Quill.register(Size, true);
 
-// Add fonts to whitelist and register them
-const Font = Quill.import("formats/font");
-Font.whitelist = [
-  "arial",
-  "comic-sans",
-  "courier-new",
-  "georgia",
-  "helvetica",
-  "lucida"
-];
-Quill.register(Font, true);
+// // Add fonts to whitelist and register them
+// const Font = Quill.import("formats/font");
+// Font.whitelist = [
+//   "arial",
+//   "comic-sans",
+//   "courier-new",
+//   "georgia",
+//   "helvetica",
+//   "lucida"
+// ];
+// Quill.register(Font, true);
 
 // Modules object for setting up the Quill editor
 export const modules = {
@@ -69,7 +70,7 @@ export const modules = {
 // Formats objects for setting up the Quill editor
 export const formats = [
   "header",
-  "font",
+  // "font",
   "size",
   "bold",
   "italic",
@@ -92,14 +93,14 @@ export const formats = [
 export const QuillToolbar = () => (
   <div id="toolbar">
     <span className="ql-formats">
-      <select className="ql-font" defaultValue="arial">
+      {/* <select className="ql-font" defaultValue="arial">
         <option value="arial">Arial</option>
         <option value="comic-sans">Comic Sans</option>
         <option value="courier-new">Courier New</option>
         <option value="georgia">Georgia</option>
         <option value="helvetica">Helvetica</option>
         <option value="lucida">Lucida</option>
-      </select>
+      </select> */}
       <select className="ql-size" defaultValue="medium">
         <option value="extra-small">Size 1</option>
         <option value="small">Size 2</option>
@@ -138,10 +139,10 @@ export const QuillToolbar = () => (
     <span className="ql-formats">
       <button className="ql-link" />
       <button className="ql-image" />
-      <button className="ql-video" />
+      {/* <button className="ql-video" /> */}
     </span>
     <span className="ql-formats">
-      <button className="ql-formula" />
+      {/* <button className="ql-formula" /> */}
       <button className="ql-code-block" />
       <button className="ql-clean" />
     </span>

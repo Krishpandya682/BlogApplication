@@ -8,6 +8,12 @@
 .content_container {
   width: 100%;
   height: 1vh;
-  margin-top: 70px;
   padding: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+.content_container .blog_list {
+  padding-left: 5rem;
+  padding-right: 5rem;
+  flex-wrap: wrap;
 }/*# sourceMappingURL=BlogList.css.map */

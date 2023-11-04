@@ -73,11 +73,8 @@ export default function (props) {
               />
             </div>
             <div className="button_group">
-              <button className="btn btn-primary">Submit</button>
+              <button className="btn btn-primary myButton">Submit</button>
             </div>
-            <p className="text-center mt-2">
-              Forgot <a href="#">password?</a>
-            </p>
           </div>
         </form>
       </div>

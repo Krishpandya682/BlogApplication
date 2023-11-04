@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactLoading from "react-loading";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import api from "../../api/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
 import MyNavbar from "../Navbar";
@@ -10,9 +10,11 @@ import Button from "react-bootstrap/esm/Button";
 
 export const Home = () => {
   const { currUser, currDbUser } = useAuth();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [user, setUser] = useState(currDbUser);
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
 
   const getUser = async () => {
     try {
@@ -26,6 +28,9 @@ export const Home = () => {
     }
   };
   useEffect(() => {
+    if (!currUser) {
+      navigate("/signIn");
+    }
     console.log("Id is", id);
     if (!id || id == currDbUser.id) {
       setUser(currDbUser);
@@ -38,7 +43,15 @@ export const Home = () => {
   if (loading) {
     return (
       <div className="loading">
-        <ReactLoading type={"balls"} color={"blue"} height={50} width={100} />
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
       </div>
     );
   }
@@ -67,16 +80,13 @@ export const Home = () => {
             <p>{user.email}</p>
           </div>
           <div className="editButton">
-            <Link underline="hover" to="/EditProfile">
+            <button class = "myButton" underline="hover" to="/EditProfile">
               Edit Profile
-            </Link>
+            </button>
           </div>
         </div>
       </div>
       <div className="user_posts">
-        {!id && <div className="create_blog_btn">
-          <Button href="/createBlog">Create Blog</Button>
-        </div>}
         <Blogs userId={id ? id : currDbUser.id} />
       </div>
     </div>

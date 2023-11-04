@@ -12,7 +12,7 @@ import api from "../../api/axiosConfig";
 import { useAuth } from "../../context/AuthContext";
 import { storage } from "../../firebase";
 import MyNavbar from "../Navbar";
-import "../styles/AuthPage.scss";
+import "../styles/EditProfile.scss";
 
 export default function (props) {
   const navigate = useNavigate();
@@ -20,8 +20,13 @@ export default function (props) {
   let [bio, setBio] = useState();
   const [imgUpload, setImgUpload] = useState(null);
   const { currDbUser, setProfileUpd, profileUpd } = useAuth();
-
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Loading...");
+  const [error, setError] = useState();
+
+  function removeError(e) {
+    setError();
+  }
 
   async function handleSignUp(e) {
     e.preventDefault();
@@ -31,6 +36,13 @@ export default function (props) {
     console.log("Method called");
     let imageRef = null;
     let data = {};
+
+    if (fullName.length === 0) {
+      setError("Full Name can't be empty!");
+      setLoading(false);
+      return;
+    }
+
     if (fullName != null && fullName != currDbUser.name) {
       console.log("Name changed");
       data.name = fullName;
@@ -61,7 +73,7 @@ export default function (props) {
     if (Object.keys(data).length == 0) {
       console.log("No Change");
       setLoading(false);
-      navigate("/Profile")
+      navigate("/Profile");
       return;
     }
     console.log("New Data", data);
@@ -83,10 +95,19 @@ export default function (props) {
         console.error(error);
       });
   }
-
   if (loading) {
     return (
-      <ReactLoading type={"balls"} color={"blue"} height={667} width={375} />
+      <div className="loading">
+        <div className="loading_bar">
+          <ReactLoading
+            type={"balls"}
+            color={"#63051e"}
+            height={50}
+            width={100}
+          />
+        </div>
+        <div className="loading_message">{loadingMessage}</div>
+      </div>
     );
   }
 
@@ -94,11 +115,13 @@ export default function (props) {
     <div>
       <MyNavbar />
       <div className="Auth-form-container">
-        <form className="Auth-form" onSubmit={handleSignUp}>
+        <form className="Auth-form d-flex" onSubmit={handleSignUp}>
           <div className="Auth-form-content">
             <div className="Auth-form-title">
               <h2>Edit Profile</h2>
             </div>
+
+            {error && <div className="error_group w-70">{error}</div>}
             <div className="form-group mt-3">
               <label>Profile Pic</label>
               <input
@@ -117,6 +140,7 @@ export default function (props) {
                 defaultValue={currDbUser.name}
                 onChange={(e) => {
                   setFullName(e.target.value);
+                  removeError();
                 }}
               />
             </div>
@@ -132,7 +156,9 @@ export default function (props) {
               />
             </div>
             <div className="d-grid gap-2 mt-3">
-              <button className="btn btn-primary">Update Profile</button>
+              <button className="btn btn-primary myButton">
+                Update Profile
+              </button>
             </div>
           </div>
         </form>

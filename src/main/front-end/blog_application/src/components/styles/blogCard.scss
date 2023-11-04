@@ -1,42 +1,63 @@
 $card-height: 400px;
 
-.card-overlay {
-    margin: 30px;
-    padding: 30px;
-    background-color: white;
-    opacity: .85;
-    color: black;
-    // font-weight: 700;
-    // mix-blend-mode: difference ;
-    // filter: grayscale(100%) contrast(1000%) invert(1);
-}
+.card_container {
+    width: 50%;
+    .mycard {
+        margin: 1rem;
+        height: $card-height !important;
+        font-size: large !important;
+        display: flex;
+        flex-direction: row;
 
-.card-title{
-    // display: flex!important;
-    // align-items: center!important;
-    font-size: 30px!important;
-}
-.mycard {
-    height: $card-height !important;
-    font-size: large!important;
-    // align-items: center!important;
-}
+        .card-overlay {
+            margin: 30px;
+            padding: 30px;
+            background-color: white;
+            opacity: 0;
+            transition: all 600ms ease-in-out;
 
-.card-img {
+            &:hover {
+                opacity: 1;
+            }
+        }
 
-    height: $card-height !important;
-    object-fit:  cover!important;
-    object-position: 50% 50% !important;
-}
+        .image_container {
+            // width: inherit!important;
+            width: 100%!important;
+            height: 100%!important;
+            overflow: hidden!important;
+            /* Hides the overflow content */
+            display: flex!important;
+            justify-content: center!important;
+            align-items: center!important;
 
-.top{
-    display: flex!important;
-    flex-direction: column!important;
-}
+        }
 
-.bottom{
-    display: flex!important;
-    flex-direction: row!important;
-    justify-content: center!important;
-    width: 100%;
+
+        .card-img {
+            min-width: 100%!important;
+            min-height: 100%!important;
+            object-fit: cover !important;
+        }
+
+        .top {
+            display: flex !important;
+            flex-direction: column !important;
+
+            .card-title {
+                font-size: 30px !important;
+            }
+        }
+
+        .bottom {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: center !important;
+            width: 100%;
+
+            .card-title {
+                font-size: 30px !important;
+            }
+        }
+    }
 }
