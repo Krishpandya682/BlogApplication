@@ -1,13 +1,17 @@
 package com.example.blogApplication.comments;
 
 import com.example.blogApplication.DTOs.CommentCommentorDTO;
+import com.example.blogApplication.blog.Blog;
 import com.example.blogApplication.blog.BlogService;
+import com.example.blogApplication.user.User;
 import com.example.blogApplication.user.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(path = "api/v1/comment")
 public class CommentController {
@@ -25,111 +29,128 @@ public class CommentController {
     }
 
     @GetMapping()
-    public List<Comment> getAllComments() {
+    public ResponseEntity<List<Comment>> getAllComments() {
         return commentService.getComments();
     }
 
     @GetMapping("/desc")
-    public List<Comment> getAllCommentsDesc() {
+    public ResponseEntity<List<Comment>> getAllCommentsDesc() {
         return commentService.getCommentsDesc();
     }
 
     @GetMapping("/getCommentCardsInfo")
-    public List<CommentCommentorDTO> getAllCommentCardsDesc() {
+    public ResponseEntity<List<CommentCommentorDTO>> getAllCommentCardsDesc() {
         return commentService.getCommentsCommentorDtoDesc();
     }
 
     @GetMapping("/byCommentor/{commentorId}")
-    public List<Comment> getCommentByCommentor(@PathVariable String commentorId) {
+    public ResponseEntity<List<Comment>> getCommentByCommentor(@PathVariable String commentorId) {
         return commentService.getCommentByCommentor(Integer.parseInt(commentorId));
     }
 
-    @PostMapping("/blog/{blogId}/user/{userId}")
-    public int addNewComment(@PathVariable(value = "userId") int userId,@PathVariable(value = "blogId") int blogId, @RequestBody Comment comment) {
-        comment.setCommentor(userService.getUser(userId));
-        comment.setBlog(blogService.getBlog(blogId));
-        return commentService.addNewComment(comment);
+    public ResponseEntity<Integer> addNewComment(int blogId, int userId, Comment comment) {
+        ResponseEntity<User> userResponse = userService.getUser(userId);
+
+        if (userResponse.getStatusCode().is2xxSuccessful()) {
+            User commentor = userResponse.getBody();
+
+            ResponseEntity<Blog> blogResponse = blogService.getBlog(blogId);
+            if (blogResponse.getStatusCode().is2xxSuccessful()) {
+                Blog blog = blogResponse.getBody();
+                comment.setCommentor(commentor);
+                comment.setBlog(blog);
+                int newCommentId = commentService.addNewComment(comment);
+                return new ResponseEntity<>(newCommentId, HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/{id}")
-    public Comment getComment(@PathVariable int id) {
+    public ResponseEntity<Comment> getComment(@PathVariable int id) {
         return commentService.getComment(id);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteComment(@PathVariable int id) {
-        commentService.deleteComment(id);
+    public ResponseEntity<Void> deleteComment(@PathVariable int id) {
+        return commentService.deleteComment(id);
     }
 
     @PutMapping("/{id}")
-    public void updateComment(@PathVariable int id, @RequestBody Comment comment) {
-        commentService.updateComment(id, comment);
+    public ResponseEntity<Comment> updateComment(@PathVariable int id, @RequestBody Comment comment) {
+        return commentService.updateComment(id, comment);
     }
 
     @GetMapping("/user/{userId}/comments")
-    public List<Comment> getAllCommentsByUser(@PathVariable(value = "userId") int userId) {
-        try {
-            userService.getUser(userId);
-        } catch (Error e) {
-            throw e;
+    public ResponseEntity<List<Comment>> getAllCommentsByUser(@PathVariable(value = "userId") int userId) {
+        ResponseEntity<List<Comment>> commentsByCommentor = commentService.getCommentByCommentor(userId);
+
+        if (commentsByCommentor.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Comment> comments = commentService.getCommentByCommentor(userId);
-        return comments;
+        return commentsByCommentor;
     }
+
     @GetMapping("/user/{userId}/comments/{limit}")
-    public List<Comment> getAllCommentsByUserLimit(@PathVariable(value = "userId") int userId, @PathVariable(value = "limit") int limit) {
+    public ResponseEntity<List<Comment>> getAllCommentsByUserLimit(@PathVariable(value = "userId") int userId, @PathVariable(value = "limit") int limit) {
         try {
             userService.getUser(userId);
-        } catch (Error e) {
-            throw e;
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Comment> comments = commentService.getCommentByCommentorLimit(userId, limit);
-        return comments;
+        return commentService.getCommentByCommentorLimit(userId, limit);
+
     }
+
+
     @GetMapping("/blog/{blogId}/comments")
-    public List<Comment> getAllCommentsOnBlog(@PathVariable(value = "blogId") int blogId) {
+    public ResponseEntity<List<Comment>> getAllCommentsOnBlog(@PathVariable(value = "blogId") int blogId) {
         try {
             blogService.getBlog(blogId);
-        } catch (Error e) {
-            throw e;
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<Comment> comments = commentService.getCommentOnBlog(blogId);
-        return comments;
+        return commentService.getCommentOnBlog(blogId);
+
     }
+
     @GetMapping("/blog/{blogId}/commentsWithUser")
-    public List<CommentCommentorDTO> getCommentsWithUsersOnBlog(@PathVariable(value = "blogId") int blogId) {
+    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersOnBlog(@PathVariable(value = "blogId") int blogId) {
         try {
             blogService.getBlog(blogId);
-        } catch (Error e) {
-            throw e;
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<CommentCommentorDTO> commentsWithUsers = commentService.getCommentsWithUsersOnBlog(blogId);
-        return commentsWithUsers;
+        return commentService.getCommentsWithUsersOnBlog(blogId);
+
     }
+
     @GetMapping("/{commentId}/repliesWithUser")
-    public List<CommentCommentorDTO> getCommentsWithUsersReplies(@PathVariable(value = "commentId") int commentId) {
+    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersReplies(@PathVariable(value = "commentId") int commentId) {
         try {
             commentService.getComment(commentId);
-        } catch (Error e) {
-            throw e;
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        List<CommentCommentorDTO> commentRepliesWithUsers = commentService.getCommentsWithUsersReplies(commentId);
-        return commentRepliesWithUsers;
+        return commentService.getCommentsWithUsersReplies(commentId);
+
     }
 
     @GetMapping("/{commentId}/CommentCommentorInfo")
-    public CommentCommentorDTO getCommentAndCommentor(@PathVariable int commentId) {
+    public ResponseEntity<CommentCommentorDTO> getCommentAndCommentor(@PathVariable int commentId) {
         return commentService.getCommentAndCommentor(commentId);
-
-
     }
+
     @GetMapping("/{commentId}/NumReplies")
-    public int getRepliesCount(@PathVariable int commentId) {
+    public ResponseEntity<Integer> getRepliesCount(@PathVariable int commentId) {
         return commentService.getRepliesCount(commentId);
 
 

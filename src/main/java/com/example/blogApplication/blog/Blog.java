@@ -11,7 +11,6 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,7 +29,7 @@ public class Blog {
             generator = "blog_sequence"
     )
     // Instance variables to store the blog post's information
-	private int id;
+    private int id;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -38,7 +37,38 @@ public class Blog {
     @JoinColumn(name = "creator_id", nullable = false)
     @JsonIgnore
     private User creator;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "blog_category_table",
+            joinColumns = {
+                    @JoinColumn(name = "blog_id", referencedColumnName = "id")
+            }, inverseJoinColumns = {
+            @JoinColumn(name = "category_id", referencedColumnName = "id")
+    })
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Category> categories;
+    private String url;
+    @CreationTimestamp
+    private LocalDateTime created;
+    @OneToMany
+    private Set<Comment> commentList;
+    private String title;
+    @Column(columnDefinition = "TEXT")
+    private String content;
+    @UpdateTimestamp
+    private LocalDateTime updated;
 
+    public Blog() {
+    }
+
+    // Constructor to create a new blog post with a title and content
+    public Blog(int id, User creator, Set<Category> categories, String title, String content, String url) {
+        this.id = id;
+        this.creator = creator;
+        this.categories = categories;
+        this.title = title;
+        this.content = content;
+        this.url = url;
+    }
 
     public Set<Category> getCategories() {
         return categories;
@@ -56,42 +86,8 @@ public class Blog {
         this.commentList = commentList;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "blog_category_table",
-    joinColumns = {
-            @JoinColumn(name = "blog_id", referencedColumnName = "id")
-    },inverseJoinColumns = {
-            @JoinColumn(name = "category_id", referencedColumnName = "id")
-    })
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<Category> categories;
-    private String url;
-    @CreationTimestamp
-    private LocalDateTime created;
-
-    @OneToMany
-    private Set<Comment> commentList;
-    private String title;
-    @Column(columnDefinition="TEXT")
-    private String content;
-    @UpdateTimestamp
-    private LocalDateTime updated;
-
-    public boolean removeCategory(Category c){
+    public boolean removeCategory(Category c) {
         return this.categories.remove(c);
-    }
-
-    public Blog() {
-    }
-
-    // Constructor to create a new blog post with a title and content
-    public Blog(int id, User creator, Set<Category> categories, String title, String content, String url) {
-        this.id = id;
-        this.creator = creator;
-        this.categories = categories;
-        this.title = title;
-        this.content = content;
-        this.url = url;
     }
 
     public User getCreator() {

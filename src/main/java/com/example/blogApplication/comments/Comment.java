@@ -28,43 +28,20 @@ public class Comment {
     )
     // Instance variables to store the blog post's information
     private int id;
-
-    public int getReplyTo() {
-        return replyTo;
-    }
-
-    public void setReplyTo(int replyTo) {
-        this.replyTo = replyTo;
-    }
-
     private int replyTo;
-
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "commentor_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private User commentor;
-
-
-    public Blog getBlog() {
-        return blog;
-    }
-
-    public void setBlog(Blog blog) {
-        this.blog = blog;
-    }
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "blog_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Blog blog;
-
     @CreationTimestamp
     private LocalDateTime created;
-
-    @Column(columnDefinition="TEXT")
+    @Column(columnDefinition = "TEXT")
     private String comment;
     @UpdateTimestamp
     private LocalDateTime updated;
@@ -80,6 +57,22 @@ public class Comment {
 
         this.comment = comment;
 
+        this.blog = blog;
+    }
+
+    public int getReplyTo() {
+        return replyTo;
+    }
+
+    public void setReplyTo(int replyTo) {
+        this.replyTo = replyTo;
+    }
+
+    public Blog getBlog() {
+        return blog;
+    }
+
+    public void setBlog(Blog blog) {
         this.blog = blog;
     }
 

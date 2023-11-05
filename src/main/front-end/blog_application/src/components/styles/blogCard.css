@@ -16,13 +16,12 @@
   transition: all 600ms ease-in-out;
 }
 .card_container .mycard .card-overlay:hover {
-  opacity: 1;
+  opacity: 0.9;
 }
 .card_container .mycard .image_container {
   width: 100% !important;
   height: 100% !important;
   overflow: hidden !important;
-  /* Hides the overflow content */
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -36,6 +35,7 @@
 .card_container .mycard .top {
   display: flex !important;
   flex-direction: column !important;
+  text-align: center !important;
 }
 .card_container .mycard .top .card-title {
   font-size: 30px !important;

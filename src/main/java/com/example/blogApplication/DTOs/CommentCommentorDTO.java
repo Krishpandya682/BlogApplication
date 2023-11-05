@@ -7,6 +7,24 @@ public class CommentCommentorDTO {
     private String commentor_name;
     private LocalDateTime updated;
     private int blog_id;
+    private int user_id;
+    private int comment_id;
+    private String user_profile_pic;
+    private String comment;
+    private int replyTo;
+
+    public CommentCommentorDTO(int commentId, String commentor_name, LocalDateTime updated, int blog_id, int user_id, String user_profile_pic, String comment, int replyTo) {
+
+
+        this.comment_id = commentId;
+        this.commentor_name = commentor_name;
+        this.updated = updated;
+        this.blog_id = blog_id;
+        this.user_id = user_id;
+        this.user_profile_pic = user_profile_pic;
+        this.comment = comment;
+        this.replyTo = replyTo;
+    }
 
     public int getReplyTo() {
         return replyTo;
@@ -23,25 +41,6 @@ public class CommentCommentorDTO {
     public void setComment_id(int comment_id) {
         this.comment_id = comment_id;
     }
-
-    public CommentCommentorDTO( int commentId, String commentor_name, LocalDateTime updated, int blog_id, int user_id,  String user_profile_pic, String comment, int replyTo) {
-
-
-        this.comment_id = commentId;
-        this.commentor_name = commentor_name;
-        this.updated = updated;
-        this.blog_id = blog_id;
-        this.user_id = user_id;
-        this.user_profile_pic = user_profile_pic;
-        this.comment = comment;
-        this.replyTo = replyTo;
-    }
-
-    private int user_id;
-    private int comment_id;
-    private String user_profile_pic;
-    private String comment;
-    private int replyTo;
 
     public String getCommentor_name() {
         return commentor_name;

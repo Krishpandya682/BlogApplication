@@ -2,12 +2,14 @@ $card-height: 400px;
 
 .card_container {
     width: 50%;
+
     .mycard {
         margin: 1rem;
         height: $card-height !important;
         font-size: large !important;
         display: flex;
         flex-direction: row;
+
 
         .card-overlay {
             margin: 30px;
@@ -17,32 +19,31 @@ $card-height: 400px;
             transition: all 600ms ease-in-out;
 
             &:hover {
-                opacity: 1;
+                opacity: 0.9;
             }
         }
 
         .image_container {
-            // width: inherit!important;
-            width: 100%!important;
-            height: 100%!important;
-            overflow: hidden!important;
-            /* Hides the overflow content */
-            display: flex!important;
-            justify-content: center!important;
-            align-items: center!important;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
 
         }
 
 
         .card-img {
-            min-width: 100%!important;
-            min-height: 100%!important;
+            min-width: 100% !important;
+            min-height: 100% !important;
             object-fit: cover !important;
         }
 
         .top {
             display: flex !important;
             flex-direction: column !important;
+            text-align: center !important;
 
             .card-title {
                 font-size: 30px !important;

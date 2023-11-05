@@ -13,22 +13,44 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @DynamicUpdate
 public class User {
-	
-	@Id
-	@SequenceGenerator(
-			name = "user_sequence",
-			sequenceName = "user_sequence",
-			allocationSize = 1
-			)
-	@GeneratedValue(
-			strategy = GenerationType.SEQUENCE,
-			generator = "user_sequence"
-			)
+
+    @Id
+    @SequenceGenerator(
+            name = "user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     private int id;           // User's unique identifier
 
     private String name;      // User's name
 
     private String firebaseId; // User's Firebase ID
+    private String email;
+    @CreationTimestamp
+    private LocalDateTime created;
+    @UpdateTimestamp
+    private LocalDateTime updated;
+    @Column(length = 1000)
+    private String profile_pic;
+    @Column(columnDefinition = "TEXT")
+    private String bio;
+
+    public User() {
+    }
+
+    // Constructor to create a User object
+    public User(String name, int id, String firebaseId, String email, String profilePic, String bio) {
+        this.name = name;
+        this.id = id;
+        this.firebaseId = firebaseId;
+        this.email = email;
+        this.profile_pic = profilePic;
+        this.bio = bio;
+    }
 
     public String getEmail() {
         return email;
@@ -38,22 +60,6 @@ public class User {
         this.email = email;
     }
 
-
-    private String email;
-
-    @CreationTimestamp
-    private LocalDateTime created;
-
-    @UpdateTimestamp
-    private LocalDateTime updated;
-    public User(){}
-
-    @Column(length = 1000)
-    private String profile_pic;
-
-
-    @Column(columnDefinition="TEXT")
-    private String bio;
     // Getter method for retrieving the user's name
     public String getName() {
         return name;
@@ -92,16 +98,6 @@ public class User {
         this.bio = bio;
     }
 
-    // Constructor to create a User object
-    public User(String name, int id, String firebaseId, String email, String profilePic, String bio) {
-        this.name = name;
-        this.id = id;
-        this.firebaseId = firebaseId;
-        this.email = email;
-        this.profile_pic = profilePic;
-        this.bio = bio;
-    }
-
     public String getProfile_pic() {
         return profile_pic;
     }
@@ -109,6 +105,7 @@ public class User {
     public void setProfile_pic(String profile_pic) {
         this.profile_pic = profile_pic;
     }
+
     // A method to provide a string representation of the User object
     @Override
     public String toString() {

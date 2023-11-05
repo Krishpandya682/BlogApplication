@@ -7,6 +7,11 @@ public class BlogCategoriesDTO {
     private int blogId;
     private List<Integer> categories;
 
+    public BlogCategoriesDTO(int blogId, List<Integer> categories) {
+        this.blogId = blogId;
+        this.categories = categories;
+    }
+
     public int getBlogId() {
         return blogId;
     }
@@ -20,11 +25,6 @@ public class BlogCategoriesDTO {
     }
 
     public void setCategories(List<Integer> categories) {
-        this.categories = categories;
-    }
-
-    public BlogCategoriesDTO(int blogId, List<Integer> categories) {
-        this.blogId = blogId;
         this.categories = categories;
     }
 }

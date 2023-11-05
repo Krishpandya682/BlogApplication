@@ -1,52 +1,52 @@
 package com.example.blogApplication.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(path = "api/v1/user")
 public class UserController {
 
-	private UserService userService;
-	
-	@Autowired
-	public UserController(UserService userService) {
-		this.userService = userService;
-	}
+    private final UserService userService;
 
-	@GetMapping()
-	public List<User> getAllUsers() {
-		return userService.getUsers();
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-	}
+    @GetMapping()
+    public ResponseEntity<List<User>> getAllUsers() {
+        return userService.getUsers();
 
-	@GetMapping("/fbUser/{firebaseId}")
-	public User getFirebaseUsers(@PathVariable String firebaseId) {
-		return userService.getFbUser(firebaseId);
-	}
+    }
 
-	@PostMapping
-	public void addNewUser(@RequestBody User user){
-		userService.addNewUser(user);
-	}
+    @GetMapping("/fbUser/{firebaseId}")
+    public ResponseEntity<User> getFirebaseUsers(@PathVariable String firebaseId) {
+        return userService.getFbUser(firebaseId);
+    }
 
-	@GetMapping("/{id}")
-	public User getUser(@PathVariable int id) {
-		return userService.getUser(id);
-	}
+    @PostMapping
+    public ResponseEntity<String> addNewUser(@RequestBody User user) {
+        return userService.addNewUser(user);
+    }
 
-	@DeleteMapping("/{id}")
-	public void deleteUser(@PathVariable int id) {
-		userService.deleteUser(id);
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable int id) {
+        return userService.getUser(id);
+    }
 
-	@PutMapping("/{id}")
-	public void updateUser(@PathVariable int id, @RequestBody User user) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+        return userService.deleteUser(id);
+    }
 
-		System.out.println(user);
-		userService.updateUser(id, user);
-	}
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateUser(@PathVariable int id, @RequestBody User user) {
+
+        return userService.updateUser(id, user);
+    }
 }

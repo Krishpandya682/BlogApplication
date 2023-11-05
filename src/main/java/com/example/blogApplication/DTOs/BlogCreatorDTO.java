@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BlogCreatorDTO {
+    private final List<Category> categories = new ArrayList<>();
     private String blog_title;
     private String creator_name;
     private LocalDateTime updated;
@@ -15,15 +16,6 @@ public class BlogCreatorDTO {
     private String img_url;
     private String user_profile_pic;
     private String content;
-     private    List<Category> categories = new ArrayList<>();
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void addCategories(Category category) {
-        this.categories.add(category);
-    }
 
     public BlogCreatorDTO(String blog_title, String creator_name, LocalDateTime updated, int blog_id, int user_id, String imgUrl, String userProfilePic, String content) {
         this.blog_title = blog_title;
@@ -35,6 +27,14 @@ public class BlogCreatorDTO {
         this.user_profile_pic = userProfilePic;
         this.content = content;
 //        System.out.println("Concat worked as:- "+concat);
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void addCategories(Category category) {
+        this.categories.add(category);
     }
 
     public String getBlog_title() {

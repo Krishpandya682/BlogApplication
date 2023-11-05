@@ -8,6 +8,8 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,20 +23,22 @@ public class CommentService {
 
     @PersistenceContext
     private EntityManager entityManager;
+
     @Autowired
     public CommentService(CommentRepository commentRepositoryRepository) {
         this.commentRepository = commentRepositoryRepository;
     }
 
 
-    public List<Comment> getComments() {
-        // TODO Auto-generated method stub
-        return commentRepository.findAll();
+    public ResponseEntity<List<Comment>> getComments() {
+        List<Comment> comments = commentRepository.findAll();
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    public List<Comment> getCommentByCommentor(int commentorId) {
-        // TODO Auto-generated method stub
-        return commentRepository.findAllByCommentorIdOrderByCreatedDesc(commentorId, Pageable.unpaged());
+
+    public ResponseEntity<List<Comment>> getCommentByCommentor(int commentorId) {
+        List<Comment> comments = commentRepository.findAllByCommentorIdOrderByCreatedDesc(commentorId, Pageable.unpaged());
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     public int addNewComment(Comment comment) {
@@ -43,114 +47,120 @@ public class CommentService {
 
     }
 
-    public List<Comment> getCommentsDesc() {
-        return commentRepository.findAllByOrderByCreatedDesc();
+    public ResponseEntity<List<Comment>> getCommentsDesc() {
+        List<Comment> comments = commentRepository.findAllByOrderByCreatedDesc();
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    public Comment getComment(int id) {
+    public ResponseEntity<Comment> getComment(int id) {
         Optional<Comment> comment = commentRepository.findById(id);
-        if (!comment.isPresent()) {
-            throw new IllegalArgumentException("Comment does not exist");
+        if (comment.isPresent()) {
+            return new ResponseEntity<>(comment.get(), HttpStatus.OK);
         } else {
-            return comment.get();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    public void deleteComment(int id) {
-        List<CommentCommentorDTO> replies =  this.getCommentsWithUsersReplies(id);
-        for (CommentCommentorDTO reply: replies
-             ) {
-            deleteComment(reply.getComment_id());
+    public ResponseEntity<Void> deleteComment(int id) {
+        ResponseEntity<List<CommentCommentorDTO>> repliesResponse = this.getCommentsWithUsersReplies(id);
+
+        if (repliesResponse.getStatusCode() == HttpStatus.OK) {
+            List<CommentCommentorDTO> replies = repliesResponse.getBody();
+            for (CommentCommentorDTO reply : replies) {
+                deleteComment(reply.getComment_id());
+            }
+        } else if (repliesResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+            // No replies found, proceed with comment deletion
+            commentRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Indicates successful deletion
         }
+
         commentRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Indicates successful deletion
     }
 
-    public void updateComment(int id, Comment comment) {
-        Comment b = commentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Comment does not exist with id: " + id));
+    public ResponseEntity<Comment> updateComment(int id, Comment comment) {
+        Comment existingComment = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Comment does not exist with id: " + id));
+
         if (comment.getComment() != null) {
-            b.setComment(comment.getComment());
+            existingComment.setComment(comment.getComment());
         }
-        commentRepository.save(b);
+
+        Comment updatedComment = commentRepository.save(existingComment);
+        return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 
 
-    public CommentCommentorDTO getCommentAndCommentor(int commentId) {
-        String jpqlQuery = "SELECT NEW com.example.commentApplication.DTOs.CommentCommentorDTO( b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
+    public ResponseEntity<CommentCommentorDTO> getCommentAndCommentor(int commentId) {
+        String jpqlQuery = "SELECT NEW com.example.commentApplication.DTOs.CommentCommentorDTO(b.id, u.name, b.updated, b.id, u.id, u.profile_pic, b.comment, b.replyTo) " +
                 "FROM Comment b LEFT JOIN b.commentor u " +
                 "WHERE b.id = :commentId";
         TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);
         query.setParameter("commentId", commentId);
+
         try {
-            return query.getSingleResult();
+            CommentCommentorDTO commentInfo = query.getSingleResult();
+            return new ResponseEntity<>(commentInfo, HttpStatus.OK);
         } catch (NoResultException e) {
-            throw e; // Handle the case where the comment with the given ID doesn't exist.
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    public List<CommentCommentorDTO> getCommentsCommentorDtoDesc() {
+
+    public ResponseEntity<List<CommentCommentorDTO>> getCommentsCommentorDtoDesc() {
         String jpqlQuery = "SELECT NEW com.example.commentApplication.DTOs.CommentCommentorDTO( b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
                 "FROM Comment b LEFT JOIN b.commentor u ORDER BY b.created DESC";
         TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);
 
-        try {
-            return query.getResultList();
-        } catch (NoResultException e) {
-            throw e; // Handle the case where the comment with the given ID doesn't exist.
-        }
+        List<CommentCommentorDTO> comments = query.getResultList();
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    public List<Comment> getCommentOnBlog(int blogId) {
-        return commentRepository.findAllByBlogIdOrderByCreatedDesc(blogId);
+    public ResponseEntity<List<Comment>> getCommentOnBlog(int blogId) {
+        List<Comment> comments = commentRepository.findAllByBlogIdOrderByCreatedDesc(blogId);
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    public List<CommentCommentorDTO> getCommentsWithUsersOnBlog(int blogId) {
-
+    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersOnBlog(int blogId) {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.CommentCommentorDTO(c.id, u.name, c.updated, b.id, u.id, u.profile_pic, c.comment, c.replyTo) " +
                 "FROM Comment c LEFT JOIN c.commentor u " +
                 "LEFT JOIN c.blog b " +
-                "WHERE b.id = :blogId "+
-                "AND c.replyTo = -1 "+
+                "WHERE b.id = :blogId " +
+                "AND c.replyTo = -1 " +
                 "ORDER BY c.created DESC ";
         TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);
         query.setParameter("blogId", blogId);
-        try {
-            return query.getResultList();
-        } catch (NoResultException e) {
-            throw e; // Handle the case where the blog with the given ID doesn't exist.
-        }
+
+        List<CommentCommentorDTO> commentsWithUsers = query.getResultList();
+        return new ResponseEntity<>(commentsWithUsers, HttpStatus.OK);
     }
 
-    public List<Comment> getCommentByCommentorLimit(int commentorId, int limit) {
-
-        return commentRepository.findAllByCommentorIdOrderByCreatedDesc(commentorId, PageRequest.of(0, limit));
+    public ResponseEntity<List<Comment>> getCommentByCommentorLimit(int commentorId, int limit) {
+        List<Comment> comments = commentRepository.findAllByCommentorIdOrderByCreatedDesc(commentorId, PageRequest.of(0, limit));
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    public List<CommentCommentorDTO> getCommentsWithUsersReplies(int commentId) {
+    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersReplies(int commentId) {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.CommentCommentorDTO(c.id, u.name, c.updated, b.id, u.id, u.profile_pic, c.comment, c.replyTo) " +
                 "FROM Comment c LEFT JOIN c.commentor u " +
                 "LEFT JOIN c.blog b " +
-                "WHERE c.replyTo = :commentId "+
+                "WHERE c.replyTo = :commentId " +
                 "ORDER BY c.created DESC ";
         TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);
         query.setParameter("commentId", commentId);
-        try {
-            return query.getResultList();
-        } catch (NoResultException e) {
-            throw e; // Handle the case where the blog with the given ID doesn't exist.
+
+        List<CommentCommentorDTO> commentRepliesWithUsers = query.getResultList();
+        return new ResponseEntity<>(commentRepliesWithUsers, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> getRepliesCount(int commentId) {
+        if (commentRepository.existsById(commentId)) {
+            int count = commentRepository.countByReplyTo(commentId);
+            return new ResponseEntity<>(count, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    public int getRepliesCount(int commentId) {
-        return commentRepository.countByReplyTo(commentId);
-//        String jpqlQuery = "SELECT COUNT(*) " +
-//                "FROM Comment c "+
-//                "WHERE c.replyTo = :commentId ";
-//        TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);
-//        query.setParameter("commentId", commentId);
-//        try {
-//            return query.getSingleResult();
-//        } catch (NoResultException e) {
-//            throw e; // Handle the case where the blog with the given ID doesn't exist.
-//        }
-    }
 }
