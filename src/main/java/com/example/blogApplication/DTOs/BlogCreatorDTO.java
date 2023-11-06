@@ -4,10 +4,12 @@ import com.example.blogApplication.categories.Category;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BlogCreatorDTO {
-    private final List<Category> categories = new ArrayList<>();
+    private final Set<Category> categories = new HashSet<>();
     private String blog_title;
     private String creator_name;
     private LocalDateTime updated;
@@ -29,7 +31,7 @@ public class BlogCreatorDTO {
 //        System.out.println("Concat worked as:- "+concat);
     }
 
-    public List<Category> getCategories() {
+    public Set<Category> getCategories() {
         return categories;
     }
 

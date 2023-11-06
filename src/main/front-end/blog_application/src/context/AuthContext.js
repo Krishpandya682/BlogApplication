@@ -81,8 +81,6 @@ export function AuthProvider({ children }) {
   }
   useEffect(() => {
 
-    console.log("AUTH CONTEXT USE EFFECT!!");
-
     setLoading(true);
     const unsubscribe = auth.onAuthStateChanged((user) => {
       console.log("firbase auth change User is", user);

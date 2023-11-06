@@ -94,7 +94,7 @@ public class CommentService {
 
     public ResponseEntity<CommentCommentorDTO> getCommentAndCommentor(int commentId) {
         String jpqlQuery = "SELECT NEW com.example.commentApplication.DTOs.CommentCommentorDTO(b.id, u.name, b.updated, b.id, u.id, u.profile_pic, b.comment, b.replyTo) " +
-                "FROM Comment b LEFT JOIN b.commentor u " +
+                "FROM Comment b JOIN b.commentor u " +
                 "WHERE b.id = :commentId";
         TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);
         query.setParameter("commentId", commentId);
@@ -110,7 +110,7 @@ public class CommentService {
 
     public ResponseEntity<List<CommentCommentorDTO>> getCommentsCommentorDtoDesc() {
         String jpqlQuery = "SELECT NEW com.example.commentApplication.DTOs.CommentCommentorDTO( b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
-                "FROM Comment b LEFT JOIN b.commentor u ORDER BY b.created DESC";
+                "FROM Comment b JOIN b.commentor u ORDER BY b.created DESC";
         TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);
 
         List<CommentCommentorDTO> comments = query.getResultList();
@@ -124,8 +124,8 @@ public class CommentService {
 
     public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersOnBlog(int blogId) {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.CommentCommentorDTO(c.id, u.name, c.updated, b.id, u.id, u.profile_pic, c.comment, c.replyTo) " +
-                "FROM Comment c LEFT JOIN c.commentor u " +
-                "LEFT JOIN c.blog b " +
+                "FROM Comment c JOIN c.commentor u " +
+                "JOIN c.blog b " +
                 "WHERE b.id = :blogId " +
                 "AND c.replyTo = -1 " +
                 "ORDER BY c.created DESC ";
@@ -143,8 +143,8 @@ public class CommentService {
 
     public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersReplies(int commentId) {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.CommentCommentorDTO(c.id, u.name, c.updated, b.id, u.id, u.profile_pic, c.comment, c.replyTo) " +
-                "FROM Comment c LEFT JOIN c.commentor u " +
-                "LEFT JOIN c.blog b " +
+                "FROM Comment c JOIN c.commentor u " +
+                "JOIN c.blog b " +
                 "WHERE c.replyTo = :commentId " +
                 "ORDER BY c.created DESC ";
         TypedQuery<CommentCommentorDTO> query = entityManager.createQuery(jpqlQuery, CommentCommentorDTO.class);

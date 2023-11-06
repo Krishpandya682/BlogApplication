@@ -1,5 +1,6 @@
 package com.example.blogApplication.comments;
 
+import com.example.blogApplication.BlogApplication;
 import com.example.blogApplication.DTOs.CommentCommentorDTO;
 import com.example.blogApplication.blog.Blog;
 import com.example.blogApplication.blog.BlogService;
@@ -45,18 +46,31 @@ public class CommentController {
 
     @GetMapping("/byCommentor/{commentorId}")
     public ResponseEntity<List<Comment>> getCommentByCommentor(@PathVariable String commentorId) {
+        if(!BlogApplication.isInteger(commentorId)){
+            return ResponseEntity.badRequest().build();
+        }
         return commentService.getCommentByCommentor(Integer.parseInt(commentorId));
     }
 
-    public ResponseEntity<Integer> addNewComment(int blogId, int userId, Comment comment) {
-        ResponseEntity<User> userResponse = userService.getUser(userId);
+    @PostMapping("/blog/{blogId}/user/{userId}")
+    public ResponseEntity<Integer> addNewComment(@PathVariable String blogId, @PathVariable String userId, @RequestBody Comment comment) {
+        System.out.println("Calling posNewComment:-" + comment);
+        if(!BlogApplication.isInteger(blogId)){
+            return ResponseEntity.badRequest().build();
+        }
+        if(!BlogApplication.isInteger(userId)){
+            return ResponseEntity.badRequest().build();
+        }
+        ResponseEntity<User> userResponse = userService.getUser(Integer.parseInt(userId));
 
         if (userResponse.getStatusCode().is2xxSuccessful()) {
             User commentor = userResponse.getBody();
-
-            ResponseEntity<Blog> blogResponse = blogService.getBlog(blogId);
+            System.out.println("Commentor is:" + commentor);
+            ResponseEntity<Blog> blogResponse = blogService.getBlog(Integer.parseInt(blogId));
             if (blogResponse.getStatusCode().is2xxSuccessful()) {
                 Blog blog = blogResponse.getBody();
+
+                System.out.println("Blog is:" + blog);
                 comment.setCommentor(commentor);
                 comment.setBlog(blog);
                 int newCommentId = commentService.addNewComment(comment);
@@ -70,23 +84,35 @@ public class CommentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Comment> getComment(@PathVariable int id) {
-        return commentService.getComment(id);
+    public ResponseEntity<Comment> getComment(@PathVariable String id) {
+        if (!BlogApplication.isInteger(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return commentService.getComment(Integer.parseInt(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable int id) {
-        return commentService.deleteComment(id);
+    public ResponseEntity<Void> deleteComment(@PathVariable String id) {
+        if (!BlogApplication.isInteger(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return commentService.deleteComment(Integer.parseInt(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable int id, @RequestBody Comment comment) {
-        return commentService.updateComment(id, comment);
+    public ResponseEntity<Comment> updateComment(@PathVariable String id, @RequestBody Comment comment) {
+        if (!BlogApplication.isInteger(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return commentService.updateComment(Integer.parseInt(id), comment);
     }
 
     @GetMapping("/user/{userId}/comments")
-    public ResponseEntity<List<Comment>> getAllCommentsByUser(@PathVariable(value = "userId") int userId) {
-        ResponseEntity<List<Comment>> commentsByCommentor = commentService.getCommentByCommentor(userId);
+    public ResponseEntity<List<Comment>> getAllCommentsByUser(@PathVariable(value = "userId") String userId) {
+        if (!BlogApplication.isInteger(userId)) {
+            return ResponseEntity.badRequest().build();
+        }
+        ResponseEntity<List<Comment>> commentsByCommentor = commentService.getCommentByCommentor(Integer.parseInt(userId));
 
         if (commentsByCommentor.getStatusCode() == HttpStatus.NOT_FOUND) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -96,62 +122,80 @@ public class CommentController {
     }
 
     @GetMapping("/user/{userId}/comments/{limit}")
-    public ResponseEntity<List<Comment>> getAllCommentsByUserLimit(@PathVariable(value = "userId") int userId, @PathVariable(value = "limit") int limit) {
+    public ResponseEntity<List<Comment>> getAllCommentsByUserLimit(@PathVariable(value = "userId") String userId, @PathVariable(value = "limit") int limit) {
+        if (!BlogApplication.isInteger(userId)) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
-            userService.getUser(userId);
+            userService.getUser(Integer.parseInt(userId));
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return commentService.getCommentByCommentorLimit(userId, limit);
+        return commentService.getCommentByCommentorLimit(Integer.parseInt(userId), limit);
 
     }
 
 
     @GetMapping("/blog/{blogId}/comments")
-    public ResponseEntity<List<Comment>> getAllCommentsOnBlog(@PathVariable(value = "blogId") int blogId) {
+    public ResponseEntity<List<Comment>> getAllCommentsOnBlog(@PathVariable(value = "blogId") String blogId) {
+        if (!BlogApplication.isInteger(blogId)) {
+            return ResponseEntity.badRequest().build();
+        }
         try {
-            blogService.getBlog(blogId);
+            blogService.getBlog(Integer.parseInt(blogId));
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return commentService.getCommentOnBlog(blogId);
+        return commentService.getCommentOnBlog(Integer.parseInt(blogId));
 
     }
 
     @GetMapping("/blog/{blogId}/commentsWithUser")
-    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersOnBlog(@PathVariable(value = "blogId") int blogId) {
+    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersOnBlog(@PathVariable(value = "blogId") String blogId) {
+        if(!BlogApplication.isInteger(blogId)){
+            return ResponseEntity.badRequest().build();
+        }
         try {
-            blogService.getBlog(blogId);
+            blogService.getBlog(Integer.parseInt(blogId));
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return commentService.getCommentsWithUsersOnBlog(blogId);
+        return commentService.getCommentsWithUsersOnBlog(Integer.parseInt(blogId));
 
     }
 
     @GetMapping("/{commentId}/repliesWithUser")
-    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersReplies(@PathVariable(value = "commentId") int commentId) {
+    public ResponseEntity<List<CommentCommentorDTO>> getCommentsWithUsersReplies(@PathVariable(value = "commentId") String commentId) {
+        if(!BlogApplication.isInteger(commentId)){
+            return ResponseEntity.badRequest().build();
+        }
         try {
-            commentService.getComment(commentId);
+            commentService.getComment(Integer.parseInt(commentId));
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return commentService.getCommentsWithUsersReplies(commentId);
+        return commentService.getCommentsWithUsersReplies(Integer.parseInt(commentId));
 
     }
 
     @GetMapping("/{commentId}/CommentCommentorInfo")
-    public ResponseEntity<CommentCommentorDTO> getCommentAndCommentor(@PathVariable int commentId) {
-        return commentService.getCommentAndCommentor(commentId);
+    public ResponseEntity<CommentCommentorDTO> getCommentAndCommentor(@PathVariable String commentId) {
+        if(!BlogApplication.isInteger(commentId)){
+            return ResponseEntity.badRequest().build();
+        }
+        return commentService.getCommentAndCommentor(Integer.parseInt(commentId));
     }
 
     @GetMapping("/{commentId}/NumReplies")
-    public ResponseEntity<Integer> getRepliesCount(@PathVariable int commentId) {
-        return commentService.getRepliesCount(commentId);
+    public ResponseEntity<Integer> getRepliesCount(@PathVariable String commentId) {
+        if(!BlogApplication.isInteger(commentId)){
+            return ResponseEntity.badRequest().build();
+        }
+        return commentService.getRepliesCount(Integer.parseInt(commentId));
 
 
     }

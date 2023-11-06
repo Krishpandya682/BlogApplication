@@ -1,10 +1,10 @@
 package com.example.blogApplication.categories;
 
+import com.example.blogApplication.BlogApplication;
 import com.example.blogApplication.DTOs.BlogCategoriesDTO;
 import com.example.blogApplication.DTOs.BlogCreatorDTO;
 import com.example.blogApplication.blog.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,34 +27,20 @@ public class CategoryController {
 
     @GetMapping("/blogByCategory/{catId}")
     public ResponseEntity<List<BlogCreatorDTO>> getBlogByCategory(@PathVariable String catId) {
-        try {
-            int categoryId = Integer.parseInt(catId);
-            return blogService.getBlogByCategory(categoryId);
-        } catch (NumberFormatException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (!BlogApplication.isInteger(catId)) {
+            return ResponseEntity.badRequest().build();
         }
+        return blogService.getBlogByCategory(Integer.parseInt(catId));
+
     }
 
     @GetMapping("/blogCategories/{blogId}")
     public ResponseEntity<List<Category>> getBlogCategories(@PathVariable String blogId) {
+        if (!BlogApplication.isInteger(blogId)) {
+            return ResponseEntity.badRequest().build();
+        }
         return categoryService.getBlogCategories(Integer.parseInt(blogId));
-//		return null;
-    }
 
-    @PostMapping("/{blogId}/{catId}")
-    public ResponseEntity<Void> addCategoryToBlog(@PathVariable String catId, @PathVariable String blogId) {
-        try {
-            categoryService.findCategoryById(Integer.parseInt(catId));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        try {
-            blogService.addCategoryToBlog(catId, blogId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @PostMapping("/")
@@ -64,13 +50,19 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
-        return categoryService.deleteCategory(id);
+    public ResponseEntity<Void> deleteCategory(@PathVariable String id) {
+        if (!BlogApplication.isInteger(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return categoryService.deleteCategory(Integer.parseInt(id));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
-        return categoryService.getCategoryById(id);
+    public ResponseEntity<Category> getCategoryById(@PathVariable String id) {
+        if (!BlogApplication.isInteger(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return categoryService.getCategoryById(Integer.parseInt(id));
     }
 
     @GetMapping("/")
@@ -79,8 +71,11 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCategory(@PathVariable int id, @RequestBody Category category) {
-        return categoryService.updateCategory(id, category);
+    public ResponseEntity<Void> updateCategory(@PathVariable String id, @RequestBody Category category) {
+        if (!BlogApplication.isInteger(id)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return categoryService.updateCategory(Integer.parseInt(id), category);
     }
 
     @PostMapping("/AddBlogCategories")

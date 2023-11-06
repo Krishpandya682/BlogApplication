@@ -40,7 +40,7 @@ public class BlogService {
 
     public ResponseEntity<List<BlogCreatorDTO>> getBlogByCreator(int creatorId) {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
-                "FROM Blog b LEFT JOIN b.creator u " +
+                "FROM Blog b JOIN b.creator u " +
                 "WHERE u.id = :creatorId " +
                 "ORDER BY b.created DESC";
         TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
@@ -113,7 +113,7 @@ public class BlogService {
 
     public ResponseEntity<BlogCreatorDTO> getBlogAndCreator(int blogId) {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
-                "FROM Blog b LEFT JOIN b.creator u " +
+                "FROM Blog b JOIN b.creator u " +
                 "WHERE b.id = :blogId";
         TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
         query.setParameter("blogId", blogId);
@@ -131,7 +131,7 @@ public class BlogService {
 
     public ResponseEntity<List<BlogCreatorDTO>> getBlogsCreatorDtoDesc() {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
-                "FROM Blog b LEFT JOIN b.creator u " +
+                "FROM Blog b JOIN b.creator u " +
                 "ORDER BY b.created DESC";
         TypedQuery<BlogCreatorDTO> query = entityManager.createQuery(jpqlQuery, BlogCreatorDTO.class);
 
@@ -148,8 +148,8 @@ public class BlogService {
 
     public ResponseEntity<List<BlogCreatorDTO>> getBlogByCategory(int catId) {
         String jpqlQuery = "SELECT NEW com.example.blogApplication.DTOs.BlogCreatorDTO(b.title, u.name, b.updated, b.id, u.id, b.url, u.profile_pic, b.content) " +
-                "FROM Blog b LEFT JOIN b.creator u " +
-                "LEFT JOIN b.categories cat " +
+                "FROM Blog b JOIN b.creator u " +
+                "JOIN b.categories cat " +
                 "WHERE cat.id = :catId " +
                 "ORDER BY b.created DESC";
 
@@ -164,15 +164,15 @@ public class BlogService {
         }
     }
 
-
-    public void addCategoryToBlog(String catId, String blogId) {
-        Optional<Blog> b = blogRepository.findById(Integer.valueOf(blogId));
-        if (!b.isPresent()) {
-            throw new IllegalArgumentException("The blog does not exist");
-        } else {
-
-        }
-    }
+//
+//    public void addCategoryToBlog(String catId, String blogId) {
+//        Optional<Blog> b = blogRepository.findById(Integer.valueOf(blogId));
+//        if (!b.isPresent()) {
+//            throw new IllegalArgumentException("The blog does not exist");
+//        } else {
+//
+//        }
+//    }
 
     public ResponseEntity<Void> addCategoriesToBlog(BlogCategoriesDTO blogCategories) {
         try {

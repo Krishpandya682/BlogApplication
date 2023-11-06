@@ -25,9 +25,7 @@ public class User {
             generator = "user_sequence"
     )
     private int id;           // User's unique identifier
-
     private String name;      // User's name
-
     private String firebaseId; // User's Firebase ID
     private String email;
     @CreationTimestamp
